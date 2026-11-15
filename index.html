@@ -857,6 +857,7 @@ function movie(user){
  at(end+1900,done);
 }
 
+try{document.documentElement.dataset.build='intro-v2+portal-anim';console.log('JoyCampusCare build: intro-v2 + portal animations')}catch(e){}
 /* ---------- fixes + UI sounds + notifications ---------- */
 (function(){
  const st=document.createElement('style');st.id='jn-css';
@@ -998,3 +999,38 @@ const KB=[
 {k:['blood','donor'],a:'<b>Blood finder</b> helps students find donors and blood banks quickly.'},
 {k:['opinion'],a:'<b>Second opinion</b>: a student or doctor asks another doctor to review a case. Doctors answer under <b>Second opinions</b>.'},
 {k:['accessib','disab','screen reader'],a:'<b>Accessibility help</b> sends a request to admins, who mark it done. The site also supports keyboard focus and a dark or light theme.'},
+{k:['privacy','permission','permit','consent','history','records'],a:'Students choose which doctors may see their medical history under <b>Data privacy</b>. If a doctor has no permission, they are asked to get it first.'},
+{k:['doctor login','doctor portal','as a doctor','prescription','call next','availability'],a:'Doctors see <b>Today\'s queue</b> (Call next patient → Open consultation → write prescription or follow-up), <b>Availability</b>, <b>Patient records</b> (only with permission) and <b>Second opinions</b>.'},
+{k:['admin'],a:'Admins get an overview (students, doctors, appointments, open emergencies), student and doctor management (suspend or activate), the full queue, emergency requests, hospital verification, feedback and analytics.'},
+{k:['hospital login','partner','facilities'],a:'Hospital accounts update <b>beds and facilities</b>, <b>doctor duty</b>, <b>equipment and maintenance</b> and their <b>profile</b>. Admins verify a hospital before students see it.'},
+{k:['dark','light','theme','sidebar','tab','collapse','glass','navigation','liquid'],a:'Use the <b>Light / dark</b> button at the top. The <b>sidebar v5</b> has a « button to collapse it to letters; the <b>glass tabs</b> above the page slide a liquid highlight to the active module (on phones they become a bottom dock). Each portal has its own 3D look: Student orbiting rings, Doctor heartbeat line and DNA, Admin data grid and cubes, Hospital building and city pulse.'},
+{k:['save','storage','reset','clear','data','lost','backup'],a:'This is a demo build: everything is saved in <b>this browser only</b> (localStorage). Other devices will not see it. To reset, clear the site data for this page in your browser settings.'},
+{k:['download','host','deploy','publish','apply','install','online','domain','production','how to use','site'],a:'It is a <b>single HTML file</b>. To use it: open it in a browser. To put it online, upload the file to any static host (Netlify Drop, GitHub Pages, Vercel). To make it real for a campus you would need a backend for shared data, secure logins (passwords here are plain demo text) and real SMS or call integration. Do not use it for real medical records as it stands.'},
+{k:['name','meaning','replay','intro','movie','title'],a:'<b>JOY</b> is the feeling of being well, heard and looked after. <b>CAMPUS</b> is one shared home for students, doctors, wardens and hospitals. <b>CARE</b> is real help at any hour. Playing the title sequence with voice.',f:()=>setTimeout(()=>movie(true),400)}
+];
+function answer(q){
+ const t=q.toLowerCase();
+ if(/where am i|this page|current page|this screen/.test(t))return {a:here()};
+ let best=null,sc=0;KB.forEach(e=>{let s=0;e.k.forEach(k=>{if(t.includes(k))s+=k.length>4?2:1});if(s>sc){sc=s;best=e}});
+ if(!best)return {a:'I can explain how the website works, the four portals, demo logins, booking, SOS, NightCare, privacy, saving data and how to host it. Try one of the buttons below.'};
+ return {a:typeof best.a==='function'?best.a():best.a,f:best.f};
+}
+function agent(){
+ const fab=document.createElement('button');fab.id='jai-fab';fab.type='button';fab.setAttribute('aria-label','Open Joy Helper');fab.textContent='AI';
+ const p=document.createElement('div');p.id='jai';
+ p.innerHTML='<div class="jai-h"><div><b>Joy Helper</b><small>Small AI guide · works offline</small></div><button class="jai-x" type="button" aria-label="Close">×</button></div><div class="jai-m" aria-live="polite"></div><div class="jai-c"></div><div class="jai-i"><input placeholder="Ask how this website works…" autocomplete="off"><button class="btn sm" type="button">Send</button></div>';
+ document.body.append(p,fab);
+ const m=Q('.jai-m',p),inp=Q('input',p);
+ const add=(c,h,txt)=>{const d=document.createElement('div');d.className='jai-b '+c;if(txt)d.textContent=h;else d.innerHTML=h;m.appendChild(d);m.scrollTop=m.scrollHeight};
+ const ask=q=>{q=q.trim();if(!q)return;add('me',q,1);const r=answer(q);setTimeout(()=>{add('bot',r.a);if(r.f)r.f()},350)};
+ ['How does this website work?','Demo logins','How do I book a doctor?','What is SOS?','Where am I?','How to host this site','Why this name?','Replay intro'].forEach(c=>{const b=document.createElement('button');b.type='button';b.textContent=c;b.onclick=()=>ask(c==='Why this name?'?'name meaning':c);Q('.jai-c',p).appendChild(b)});
+ Q('.btn',p).onclick=()=>{ask(inp.value);inp.value=''};
+ inp.onkeydown=e=>{if(e.key==='Enter'){ask(inp.value);inp.value=''}};
+ Q('.jai-x',p).onclick=()=>p.classList.remove('open');
+ fab.onclick=()=>{p.classList.toggle('open');if(p.classList.contains('open')&&!m.children.length)add('bot','Hi, I am Joy Helper. Ask me how this website works, how to use each portal, or how to put it online.')};
+}
+
+decorate();agent();movie(false);
+})();
+</script>
+</body></html>
