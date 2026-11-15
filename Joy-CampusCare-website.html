@@ -1,0 +1,1035 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Joy CampusCare</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600&display=swap">
+<style>
+/* Layout: login gate -> app shell with role sidebar (bottom bar on phones) + module pages in a 12-col grid */
+:root{--onb:#fff;--bg:#f3f6f5;--panel:#fff;--ink:#10262b;--mute:#5b7076;--line:#dbe5e3;--brand:#0b6b6f;--brand-2:#e3f2f0;--sos:#d92f2f;--sos-2:#fde8e8;--ok:#1f8a4c;--ok-2:#e0f4e8;--warn:#b7791f;--warn-2:#fdf3dc;--night:#1d2a5c;--night-2:#e6e9f7;
+--d:'Bricolage Grotesque',system-ui,sans-serif;--b:'Figtree',system-ui,sans-serif}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--onb:#06201f;--bg:#0c1a1d;--panel:#142428;--ink:#e6f1ef;--mute:#92a9ad;--line:#26393d;--brand:#4fc3c0;--brand-2:#173a3b;--sos:#ff6b6b;--sos-2:#3a1a1c;--ok:#4cc582;--ok-2:#163326;--warn:#e8b04b;--warn-2:#3a2f14;--night:#9fb0f5;--night-2:#1c2347;color-scheme:dark}}
+:root[data-theme="dark"]{--onb:#06201f;--bg:#0c1a1d;--panel:#142428;--ink:#e6f1ef;--mute:#92a9ad;--line:#26393d;--brand:#4fc3c0;--brand-2:#173a3b;--sos:#ff6b6b;--sos-2:#3a1a1c;--ok:#4cc582;--ok-2:#163326;--warn:#e8b04b;--warn-2:#3a2f14;--night:#9fb0f5;--night-2:#1c2347;color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:15px/1.5 var(--b);padding-block:0;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+h1,h2,h3{font-family:var(--d);line-height:1.15;margin:0;text-wrap:balance}
+h2{font-size:1.6rem}h3{font-size:1.05rem}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:3px solid var(--brand);outline-offset:2px}
+.btn{background:var(--brand);color:var(--onb);border:0;border-radius:8px;padding:9px 16px;font-weight:600}
+.btn.ghost{background:transparent;color:var(--brand);border:1.5px solid var(--brand)}
+.btn.sos{background:var(--sos);color:#fff}
+.btn.sm{padding:5px 11px;font-size:.85rem}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+input,select,textarea{background:var(--bg);border:1.5px solid var(--line);border-radius:8px;padding:9px 11px;width:100%}
+label{display:block;font-size:.8rem;font-weight:600;color:var(--mute);margin:10px 0 4px;letter-spacing:.03em;text-transform:uppercase}
+.gate{max-width:980px;margin:0 auto;padding-block:48px}
+.gate h1{font-size:clamp(2rem,5vw,3.2rem);max-width:15ch}
+.gate p.lead{color:var(--mute);max-width:52ch;margin:12px 0 28px}
+.roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+.role{background:var(--panel);border:1.5px solid var(--line);border-radius:12px;padding:18px;text-align:left}
+.role:hover{border-color:var(--brand)}
+.role b{font-family:var(--d);font-size:1.15rem;display:block}
+.role span{color:var(--mute);font-size:.88rem}
+.shell{display:grid;grid-template-columns:230px minmax(0,1fr);min-height:100vh;max-width:1280px;margin:0 auto;gap:24px}
+.side{position:sticky;top:0;align-self:start;padding-block:20px;display:flex;flex-direction:column;gap:4px;max-height:100vh;overflow:auto}
+.brand{font-family:var(--d);font-weight:800;font-size:1.25rem;color:var(--brand);margin-bottom:10px}
+.brand small{display:block;font:500 .72rem var(--b);color:var(--mute);letter-spacing:.06em;text-transform:uppercase}
+.nav{background:none;border:0;text-align:left;padding:8px 10px;border-radius:8px;color:var(--mute);font-weight:500}
+.nav:hover{background:var(--brand-2)}
+.nav.on{background:var(--brand-2);color:var(--brand);font-weight:600}
+.nav.night.on{background:var(--night-2);color:var(--night)}
+.main{padding-block:20px 60px;min-width:0}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.top .who{color:var(--mute);font-size:.9rem}
+.sosbar{position:sticky;top:0;z-index:5;background:var(--sos);color:#fff;border-radius:10px;padding:10px 14px;display:flex;gap:10px;align-items:center;justify-content:space-between;margin-bottom:16px;flex-wrap:wrap}
+.sosbar button{background:#fff;color:var(--sos);border:0;border-radius:8px;padding:6px 14px;font-weight:700}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:16px;min-width:0}
+.card h3{margin-bottom:6px}
+.muted{color:var(--mute);font-size:.9rem}
+.pill{display:inline-block;border-radius:99px;padding:2px 10px;font-size:.78rem;font-weight:600;background:var(--brand-2);color:var(--brand)}
+.pill.ok{background:var(--ok-2);color:var(--ok)}.pill.warn{background:var(--warn-2);color:var(--warn)}.pill.bad{background:var(--sos-2);color:var(--sos)}.pill.night{background:var(--night-2);color:var(--night)}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.row.sp{justify-content:space-between}
+.list{display:flex;flex-direction:column;gap:10px;margin-top:10px}
+.item{border:1px solid var(--line);border-radius:10px;padding:12px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center}
+.item>div{min-width:0}
+.stat{font-family:var(--d);font-size:2rem;font-weight:800;color:var(--brand)}
+.tokenbox{background:var(--brand);color:var(--onb);border-radius:12px;padding:16px;text-align:center}
+.tokenbox .n{font-family:var(--d);font-size:3rem;font-weight:800;line-height:1}
+.bar{height:10px;background:var(--line);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--brand)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:10px 0}
+.chip{border:1.5px solid var(--line);background:var(--panel);border-radius:99px;padding:5px 13px;font-size:.88rem}
+.chip.on{background:var(--brand);border-color:var(--brand);color:var(--onb)}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:.9rem}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{color:var(--mute);font-size:.75rem;text-transform:uppercase;letter-spacing:.05em}
+.qr{display:grid;grid-template-columns:repeat(21,1fr);width:168px;aspect-ratio:1;background:#fff;padding:8px;border-radius:8px;gap:0}
+.qr i{background:#fff}.qr i.k{background:#10262b}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 18px;border-radius:10px;z-index:50;max-width:90vw}
+.modal{position:fixed;inset:0;background:rgba(5,20,22,.6);display:grid;place-items:center;padding:16px;z-index:40}
+.modal .card{max-width:440px;width:100%}
+.barv{display:flex;align-items:flex-end;gap:8px;height:130px}
+.barv div{flex:1;background:var(--brand);border-radius:6px 6px 0 0;position:relative;min-height:4px}
+.barv span{position:absolute;bottom:-20px;left:0;right:0;text-align:center;font-size:.72rem;color:var(--mute)}
+.pulse{animation:p 1.4s infinite}@keyframes p{50%{opacity:.55}}
+@media (prefers-reduced-motion:reduce){.pulse{animation:none}}
+@media (max-width:760px){
+ .shell{grid-template-columns:minmax(0,1fr);gap:0}
+ .side{position:static;flex-direction:row;overflow-x:auto;max-height:none;padding-block:10px;gap:6px;border-bottom:1px solid var(--line)}
+ .brand{display:none}.nav{white-space:nowrap}
+}
+</style>
+<div id="app"></div>
+<div id="layer"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const KEY='joy-campuscare-v1';
+const today=()=>new Date().toISOString().slice(0,10);
+const addDays=n=>{const d=new Date();d.setDate(d.getDate()+n);return d.toISOString().slice(0,10)};
+const now=()=>new Date().toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});
+const EQ=['OT','Ventilator','CT Scan','MRI','X-ray','Ultrasound','Blood Bank','ICU','Emergency Surgery'];
+const SPECS=['Emergency doctor','General surgeon','Orthopaedic','Anaesthetist','Cardiologist','Neurologist'];
+function seed(){
+ const eq=(a)=>EQ.reduce((o,k)=>(o[k]=a.includes(k)?'ok':'no',o),{});
+ return {
+ students:[{id:'JU21CS0417',name:'Radhika Reddy',email:'radhika@joyuni.edu',pw:'student123',year:'3rd Year CSE',hostel:'Girls Hostel A, Room 214',blood:'B+',allergy:'Penicillin',cond:'Mild asthma',ec:'Lakshmi Reddy (Mother) +91 98480 12345',active:true,permit:{d1:true,d2:false,d3:true}}],
+ doctors:[
+  {id:'d1',name:'Dr. Anitha Rao',spec:'General Physician',email:'anitha@joyuni.edu',pw:'doctor123',avail:true,slots:'9:00 AM - 1:00 PM',active:true},
+  {id:'d2',name:'Dr. Suresh Varma',spec:'Orthopaedics',email:'suresh@joyuni.edu',pw:'doctor123',avail:true,slots:'2:00 PM - 5:00 PM',active:true},
+  {id:'d3',name:'Dr. Meera Iyer',spec:'Gynaecology',email:'meera@joyuni.edu',pw:'doctor123',avail:true,slots:'10:00 AM - 2:00 PM',active:true},
+  {id:'d4',name:'Dr. Kiran Babu',spec:'Dermatology',email:'kiran@joyuni.edu',pw:'doctor123',avail:false,slots:'On leave today',active:true},
+  {id:'d5',name:'Dr. Farah Khan',spec:'Counselling & Psychiatry',email:'farah@joyuni.edu',pw:'doctor123',avail:true,slots:'11:00 AM - 3:00 PM',active:true}],
+ admin:{email:'admin@joyuni.edu',pw:'admin123'},
+ hospitals:[
+  {id:'h1',name:'Sunrise Multispeciality Hospital',addr:'NH-65, Kukatpally',km:2.4,ph:'+91 40 5550 1001',hrs:'24 hours',er:'Emergency dept open 24x7',type:'hospital',verified:true,pw:'hospital123',email:'sunrise@hosp.in',eq:eq(['OT','Ventilator','CT Scan','X-ray','Ultrasound','Blood Bank','ICU','Emergency Surgery']),docs:{'Emergency doctor':true,'General surgeon':true,'Orthopaedic':true,'Anaesthetist':true,'Cardiologist':false,'Neurologist':false},icu:3,beds:22,amb:2,wheel:true,maint:[],cost:{'X-ray':350,'Ultrasound':900,'CT Scan':3500,'MRI':0,'Blood test':400}},
+  {id:'h2',name:'Lifeline Trauma Centre',addr:'Ring Road, Miyapur',km:4.8,ph:'+91 40 5550 1002',hrs:'24 hours',er:'Trauma and accident unit, 24x7',type:'hospital',verified:true,pw:'hospital123',email:'lifeline@hosp.in',eq:eq(['OT','Ventilator','CT Scan','MRI','X-ray','Ultrasound','Blood Bank','ICU','Emergency Surgery']),docs:{'Emergency doctor':true,'General surgeon':true,'Orthopaedic':true,'Anaesthetist':true,'Cardiologist':true,'Neurologist':true},icu:1,beds:12,amb:3,wheel:true,maint:['MRI'],cost:{'X-ray':400,'Ultrasound':1000,'CT Scan':3800,'MRI':6500,'Blood test':450}},
+  {id:'h3',name:'City Care Hospital',addr:'Main Road, Bachupally',km:1.6,ph:'+91 40 5550 1003',hrs:'8 AM - 10 PM',er:'Basic emergency care until 10 PM',type:'hospital',verified:true,pw:'hospital123',email:'citycare@hosp.in',eq:eq(['X-ray','Ultrasound','Blood Bank']),docs:{'Emergency doctor':true,'General surgeon':false,'Orthopaedic':false,'Anaesthetist':false,'Cardiologist':false,'Neurologist':false},icu:0,beds:6,amb:1,wheel:false,maint:[],cost:{'X-ray':300,'Ultrasound':800,'CT Scan':0,'MRI':0,'Blood test':350}},
+  {id:'h4',name:'Green Valley Diagnostics',addr:'Opp. Metro Station, Nizampet',km:3.1,ph:'+91 40 5550 1004',hrs:'7 AM - 9 PM',er:'No emergency department',type:'diagnostic',verified:true,pw:'hospital123',email:'greenvalley@diag.in',eq:eq(['CT Scan','MRI','X-ray','Ultrasound']),docs:{},icu:0,beds:0,amb:0,wheel:true,maint:[],cost:{'X-ray':280,'Ultrasound':750,'CT Scan':3000,'MRI':5500,'Blood test':300}},
+  {id:'h5',name:'Sri Sai Medical Institute',addr:'Hitech City Road',km:7.2,ph:'+91 40 5550 1005',hrs:'24 hours',er:'Emergency dept open 24x7',type:'hospital',verified:true,pw:'hospital123',email:'srisai@hosp.in',eq:eq(['OT','Ventilator','CT Scan','MRI','X-ray','Ultrasound','Blood Bank','ICU']),docs:{'Emergency doctor':true,'General surgeon':true,'Orthopaedic':false,'Anaesthetist':true,'Cardiologist':true,'Neurologist':true},icu:5,beds:40,amb:4,wheel:true,maint:['Ventilator'],cost:{'X-ray':450,'Ultrasound':1100,'CT Scan':4000,'MRI':7000,'Blood test':500}}],
+ appts:[
+  {id:1,sid:'JU21CS0417',did:'d1',date:today(),reason:'Fever and sore throat for 2 days',token:'A-001',status:'done',fu:false,rx:[{name:'Paracetamol 500 mg',times:['08:00','20:00'],days:3}],notes:'Viral fever. Rest and fluids.',tests:['Blood test']},
+  {id:2,sid:'JU21CS0417',did:'d1',date:today(),reason:'Follow-up: persistent cough',token:'A-004',status:'waiting',fu:true,rx:[],notes:'',tests:[]},
+  {id:3,sid:'S2',sname:'Arjun Mehta',did:'d1',date:today(),reason:'Headache',token:'A-002',status:'consulting',fu:false,rx:[],notes:'',tests:[]},
+  {id:4,sid:'S3',sname:'Sneha Pillai',did:'d1',date:today(),reason:'Stomach pain',token:'A-003',status:'waiting',fu:false,rx:[],notes:'',tests:[]},
+  {id:5,sid:'S4',sname:'Rohit Das',did:'d2',date:today(),reason:'Knee sprain after football',token:'B-001',status:'waiting',fu:false,rx:[],notes:'',tests:[]}],
+ meds:[{id:1,name:'Paracetamol 500 mg',times:['08:00','20:00'],days:3,taken:{}}],
+ labs:[{id:1,test:'Complete blood count',date:addDays(-1),step:2,cost:350,centre:'City Care Hospital'}],
+ diag:[],refs:[{id:1,test:'Chest X-ray',doc:'Dr. Anitha Rao',date:today(),booked:false}],
+ sos:[],night:[],opinions:[],accReq:[],feedback:[{id:1,sid:'S2',doc:'d1',rating:5,text:'Quick token system, no long wait.'}],
+ access:[{when:'Today, 09:12',who:'Dr. Anitha Rao',what:'Viewed medical history (with permission)'}],
+ blood:[{bank:'Sunrise Blood Bank',km:2.4,u:{'A+':12,'A-':2,'B+':9,'B-':1,'O+':15,'O-':3,'AB+':4,'AB-':0},upd:'Today, 08:30',ver:true},{bank:'Red Cross Blood Centre',km:5.0,u:{'A+':7,'A-':0,'B+':11,'B-':2,'O+':8,'O-':1,'AB+':2,'AB-':1},upd:'Yesterday, 18:00',ver:true},{bank:'Lifeline Blood Bank',km:4.8,u:{'A+':5,'A-':1,'B+':0,'B-':0,'O+':10,'O-':2,'AB+':1,'AB-':0},upd:'Today, 07:45',ver:true}],
+ nextId:100};
+}
+let S=(()=>{try{const r=localStorage.getItem(KEY);if(r)return JSON.parse(r)}catch(e){}return seed()})();
+const save=()=>{try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}};
+const id=()=>S.nextId++;
+let U=null,view='',tmp={};
+const D=i=>S.doctors.find(d=>d.id===i)||{name:'Doctor',spec:''};
+const H=i=>S.hospitals.find(h=>h.id===i);
+const stu=i=>S.students.find(s=>s.id===i);
+const me=()=>U&&U.role==='student'?stu(U.id):null;
+function toast(m){const t=document.createElement('div');t.className='toast';t.textContent=m;document.body.appendChild(t);setTimeout(()=>t.remove(),2600)}
+function modal(html){$('#layer').innerHTML=`<div class="modal" onclick="if(event.target===this)closeModal()"><div class="card">${html}</div></div>`}
+function closeModal(){$('#layer').innerHTML=''}
+function log(who,what){S.access.unshift({when:'Today, '+new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}),who,what});}
+function go(v){view=v;tmp={};render()}
+function rerender(){save();render()}
+const val=i=>{const e=document.getElementById(i);return e?e.value.trim():''};
+</script>
+<script>
+const ROLES={student:{t:'Student',d:'Book doctors, track your token, get emergency help.',id:'JU21CS0417',pw:'student123'},doctor:{t:'Doctor',d:'Run your queue, write prescriptions, schedule follow-ups.',id:'anitha@joyuni.edu',pw:'doctor123'},admin:{t:'Admin',d:'Manage people, queues, emergencies and partner hospitals.',id:'admin@joyuni.edu',pw:'admin123'},hospital:{t:'Hospital',d:'Keep beds, doctors, equipment and ambulances up to date.',id:'sunrise@hosp.in',pw:'hospital123'}};
+const NAV={
+ student:[['home','Dashboard'],['book','Book appointment'],['appts','My appointments'],['hist','History & prescriptions'],['night','NightCare','night'],['sos','One-tap SOS'],['near','Nearby hospitals'],['match','Emergency matching'],['diag','Diagnostics & referrals'],['labs','Lab tests'],['meds','Medicine reminders'],['qr','Emergency QR card'],['blood','Blood finder'],['opinion','Second opinion'],['access','Accessibility help'],['privacy','Data privacy']],
+ doctor:[['dhome','Today\'s queue'],['davail','Availability'],['dpat','Patient records'],['dop','Second opinions']],
+ admin:[['ahome','Overview'],['astu','Students'],['adoc','Doctors'],['aq','Appointments & queue'],['aem','Emergency requests'],['ahos','Hospital partners'],['afb','Feedback'],['aan','Analytics']],
+ hospital:[['hhome','Facilities & beds'],['hdoc','Doctor duty'],['heq','Equipment & maintenance'],['hinfo','Profile & verification']]};
+function render(){
+ if(!U){$('#app').innerHTML=gate();return}
+ const nav=NAV[U.role].map(n=>`<button class="nav ${n[2]||''} ${view===n[0]?'on':''}" onclick="go('${n[0]}')">${n[1]}</button>`).join('');
+ const nm=U.role==='student'?me().name:U.role==='doctor'?D(U.id).name:U.role==='hospital'?H(U.id).name:'Administrator';
+ const sos=U.role==='student'&&view!=='sos'?`<div class="sosbar"><b>Emergency? Get help now.</b><button onclick="go('sos')">Open SOS</button></div>`:'';
+ $('#app').innerHTML=`<div class="shell"><aside class="side"><div class="brand">Joy CampusCare<small>${ROLES[U.role].t} portal</small></div>${nav}<button class="nav" onclick="logout()">Log out</button></aside><main class="main"><div class="top"><div><span class="who">Signed in as</span> <b>${esc(nm)}</b></div><button class="btn ghost sm" onclick="toggleTheme()">Light / dark</button></div>${sos}<div id="page"></div></main></div>`;
+ const f=VIEWS[view]||VIEWS[NAV[U.role][0][0]];$('#page').innerHTML=f();
+ if(view==='qr')drawQR();
+ window.scrollTo(0,0);
+}
+function toggleTheme(){const r=document.documentElement;const dark=r.dataset.theme==='dark'||(!r.dataset.theme&&matchMedia('(prefers-color-scheme:dark)').matches);r.dataset.theme=dark?'light':'dark'}
+function logout(){U=null;tmp={};render()}
+function gate(){
+ const m=tmp.gate;
+ if(!m)return `<div class="gate"><h1>Joy University healthcare, in one place.</h1><p class="lead">Appointments, night-time help, emergency SOS, hospital matching and medical records for students, doctors, admins and partner hospitals. Pick your role to sign in.</p><div class="roles">${Object.entries(ROLES).map(([k,r])=>`<button class="role" onclick="tmp.gate='${k}';render()"><b>${r.t} login</b><span>${r.d}</span></button>`).join('')}</div><div class="row" style="margin-top:22px"><button class="btn sos" onclick="emergencyNoLogin()">Emergency help, no login needed</button><span class="muted">Demo build: data stays in this browser.</span></div></div>`;
+ const r=ROLES[m];
+ return `<div class="gate"><button class="btn ghost sm" onclick="tmp.gate=null;render()">Back</button><h1 style="margin-top:14px">${r.t} login</h1><div class="card" style="max-width:420px;margin-top:16px"><label for="lid">${m==='student'?'Roll number':'Email'}</label><input id="lid" value="${r.id}"><label for="lpw">Password</label><input id="lpw" type="password" value="${r.pw}"><p class="muted">Demo credentials are filled in for you.</p><div class="row"><button class="btn" onclick="login('${m}')">Sign in</button>${m==='student'?`<button class="btn ghost" onclick="regStudent()">New student? Register</button>`:''}${m==='hospital'?`<button class="btn ghost" onclick="regHospital()">Register hospital</button>`:''}</div></div></div>`;
+}
+function login(role){
+ const i=val('lid'),p=val('lpw');let u=null;
+ if(role==='student'){const s=S.students.find(s=>s.id.toLowerCase()===i.toLowerCase()&&s.pw===p);if(s&&!s.active)return toast('This account is suspended. Contact admin.');if(s)u={role,id:s.id}}
+ if(role==='doctor'){const d=S.doctors.find(d=>d.email===i&&d.pw===p&&d.active);if(d)u={role,id:d.id}}
+ if(role==='admin'&&i===S.admin.email&&p===S.admin.pw)u={role};
+ if(role==='hospital'){const h=S.hospitals.find(h=>h.email===i&&h.pw===p);if(h)u={role,id:h.id}}
+ if(!u)return toast('Wrong ID or password.');
+ U=u;view=NAV[role][0][0];render();
+}
+function regStudent(){modal(`<h3>Student registration</h3><label for="rn">Full name</label><input id="rn"><label for="rr">Roll number</label><input id="rr"><label for="rb">Blood group</label><select id="rb">${['A+','A-','B+','B-','O+','O-','AB+','AB-'].map(b=>`<option>${b}</option>`).join('')}</select><label for="rh">Hostel and room</label><input id="rh" placeholder="Boys Hostel B, Room 110"><label for="rp">Password</label><input id="rp" type="password"><div class="row" style="margin-top:14px"><button class="btn" onclick="doRegStudent()">Create account</button><button class="btn ghost" onclick="closeModal()">Cancel</button></div>`)}
+function doRegStudent(){const n=val('rn'),r=val('rr'),p=val('rp');if(!n||!r||p.length<4)return toast('Fill name, roll number and a 4+ character password.');if(stu(r))return toast('That roll number is already registered.');
+ S.students.push({id:r,name:n,email:'',pw:p,year:'',hostel:val('rh'),blood:val('rb'),allergy:'None',cond:'None',ec:'Not added',active:true,permit:{}});save();closeModal();toast('Registered. You can sign in now.');tmp.gate='student';render()}
+function regHospital(){modal(`<h3>Register your hospital</h3><label for="hn">Hospital name</label><input id="hn"><label for="ha">Address</label><input id="ha"><label for="he">Login email</label><input id="he"><label for="hp">Password</label><input id="hp" type="password"><p class="muted">Admin verifies every new hospital before students can see it.</p><div class="row"><button class="btn" onclick="doRegHospital()">Submit</button><button class="btn ghost" onclick="closeModal()">Cancel</button></div>`)}
+function doRegHospital(){const n=val('hn'),e=val('he'),p=val('hp');if(!n||!e||p.length<4)return toast('Fill name, email and a 4+ character password.');
+ S.hospitals.push({id:'h'+id(),name:n,addr:val('ha'),km:+(Math.random()*8+1).toFixed(1),ph:'Not added',hrs:'Not added',er:'Not added',type:'hospital',verified:false,pw:p,email:e,eq:EQ.reduce((o,k)=>(o[k]='no',o),{}),docs:{},icu:0,beds:0,amb:0,wheel:false,maint:[],cost:{}});save();closeModal();toast('Submitted for admin verification.')}
+function emergencyNoLogin(){modal(`<h3 style="color:var(--sos)">Emergency help</h3><p class="muted">No login needed. The college emergency team and your hostel warden are alerted.</p><label for="er">Roll number (optional)</label><input id="er" placeholder="JU21CS0417"><label for="el">Where are you?</label><input id="el" placeholder="Girls Hostel A, near gate"><label for="et">What happened?</label><input id="et" placeholder="Accident, fainting, chest pain..."><div class="row" style="margin-top:14px"><button class="btn sos" onclick="sendSOS(true)">Send SOS</button><button class="btn ghost" onclick="closeModal()">Cancel</button></div><p class="muted">Life-threatening? Dial <b>112</b> from your phone right away.</p>`)}
+const VIEWS={};
+</script>
+<script>
+const STEPS=['Received','Emergency team notified','Help on the way','Resolved'];
+const pos=a=>S.appts.filter(x=>x.did===a.did&&x.date===a.date&&x.status==='waiting'&&x.token<a.token).length+(S.appts.some(x=>x.did===a.did&&x.date===a.date&&x.status==='consulting')?1:0);
+const apPill=s=>`<span class="pill ${s==='done'?'ok':s==='cancelled'?'bad':s==='consulting'?'warn':''}">${s}</span>`;
+const mine=()=>S.appts.filter(a=>a.sid===U.id);
+function newToken(did,date){const n=S.appts.filter(a=>a.did===did&&a.date===date).length+1;const L='ABCDEFGH'[S.doctors.findIndex(d=>d.id===did)]||'Z';return L+'-'+String(n).padStart(3,'0')}
+VIEWS.home=()=>{const s=me(),up=mine().filter(a=>a.status==='waiting'||a.status==='consulting').sort((a,b)=>a.date.localeCompare(b.date))[0];
+ const sos=S.sos.filter(x=>x.sid===U.id&&x.step<3).length;
+ return `<h2>Hello, ${esc(s.name.split(' ')[0])}</h2><p class="muted">${esc(s.year)} · ${esc(s.hostel)} · Blood group ${esc(s.blood)}</p>
+ <div class="grid" style="margin-top:14px">
+ <div class="card">${up?`<h3>Your token</h3><div class="tokenbox" style="margin-top:8px"><div class="n">${up.token}</div><div>${esc(D(up.did).name)} · ${up.date}</div></div><p style="margin:10px 0 0"><b>${pos(up)}</b> ahead of you · about ${pos(up)*8+4} min</p><button class="btn sm" style="margin-top:8px" onclick="go('appts')">Manage</button>`:`<h3>No upcoming appointment</h3><p class="muted">Pick a doctor and get a digital token.</p><button class="btn" onclick="go('book')">Book now</button>`}</div>
+ <div class="card"><h3>Medicines today</h3>${S.meds.length?S.meds.slice(0,3).map(m=>`<div class="item"><div><b>${esc(m.name)}</b><div class="muted">${m.times.join(', ')}</div></div></div>`).join(''):'<p class="muted">None scheduled.</p>'}<button class="btn ghost sm" style="margin-top:10px" onclick="go('meds')">Open reminders</button></div>
+ <div class="card"><h3>Emergency status</h3><p class="muted">${sos?'You have an open emergency request.':'No open requests. NightCare runs 8 PM to 7 AM.'}</p><div class="row"><button class="btn sos sm" onclick="go('sos')">SOS</button><button class="btn ghost sm" onclick="go('night')">NightCare</button></div></div></div>
+ <h3 style="margin:22px 0 8px">Quick services</h3><div class="grid">${[['near','Nearby hospitals','Distance, hours, directions'],['match','Emergency matching','Find a hospital with the right equipment'],['diag','Diagnostics','X-ray, MRI, CT, ultrasound'],['qr','Emergency QR card','Medical info for first responders'],['blood','Blood finder','Verified units nearby'],['labs','Lab tests','Track samples and reports']].map(x=>`<button class="role" onclick="go('${x[0]}')"><b>${x[1]}</b><span>${x[2]}</span></button>`).join('')}</div>`};
+VIEWS.book=()=>{const dd=tmp.doc||'',dates=[0,1,2,3,4,5,6].map(addDays);
+ return `<h2>Book an appointment</h2><div class="grid" style="margin-top:12px">${S.doctors.filter(d=>d.active).map(d=>`<button class="role" style="${dd===d.id?'border-color:var(--brand);background:var(--brand-2)':''}" onclick="tmp.doc='${d.id}';render()"><b>${esc(d.name)}</b><span>${esc(d.spec)}</span><div style="margin-top:6px"><span class="pill ${d.avail?'ok':'bad'}">${d.avail?'Available':'Unavailable'}</span> <span class="muted">${esc(d.slots)}</span></div></button>`).join('')}</div>
+ <div class="card" style="margin-top:14px;max-width:560px"><label for="bd">Date</label><select id="bd">${dates.map(d=>`<option>${d}</option>`).join('')}</select><label for="bp">Describe your health problem</label><textarea id="bp" rows="3" placeholder="Fever since yesterday, mild cough..."></textarea><div class="row" style="margin-top:12px"><button class="btn" onclick="bookAppt()" ${dd&&D(dd).avail?'':'disabled'}>Book and get token</button><span class="muted">${dd?esc(D(dd).name):'Select a doctor first'}</span></div></div>`};
+function bookAppt(fu){const did=tmp.doc,date=val('bd'),r=val('bp');if(!r)return toast('Please describe your problem.');
+ const a={id:id(),sid:U.id,did,date,reason:r,token:newToken(did,date),status:'waiting',fu:false,rx:[],notes:'',tests:[],remind:true};S.appts.push(a);save();toast('Booked. Your token is '+a.token);go('appts')}
+VIEWS.appts=()=>{const l=mine().sort((a,b)=>b.id-a.id);
+ return `<h2>My appointments</h2><div class="list">${l.length?l.map(a=>`<div class="card"><div class="row sp"><div><b>${a.token}</b> · ${esc(D(a.did).name)} ${a.fu?'<span class="pill night">Follow-up</span>':''}<div class="muted">${a.date} · ${esc(a.reason)}</div></div>${apPill(a.status)}</div>
+ ${a.status==='waiting'?`<div style="margin:10px 0"><div class="row sp"><span><b>Live queue:</b> ${pos(a)} ahead</span><span class="muted">about ${pos(a)*8+4} min</span></div><div class="bar" style="margin-top:6px"><i style="width:${Math.max(8,100-pos(a)*25)}%"></i></div></div>
+ <div class="row"><label style="margin:0;display:flex;gap:6px;align-items:center;text-transform:none"><input type="checkbox" style="width:auto" ${a.remind?'checked':''} onchange="remind(${a.id},this.checked)">Remind me 30 min before</label><button class="btn ghost sm" onclick="resched(${a.id})">Reschedule</button><button class="btn ghost sm" onclick="cancelAp(${a.id})">Cancel</button></div>`:''}
+ ${a.status==='done'?`<div class="row" style="margin-top:8px"><button class="btn ghost sm" onclick="go('hist')">View prescription</button><button class="btn ghost sm" onclick="rate(${a.id})">Give feedback</button></div>`:''}</div>`).join(''):'<p class="muted">Nothing booked yet.</p>'}</div>`};
+function remind(i,v){S.appts.find(a=>a.id===i).remind=v;save();toast(v?'Reminder on.':'Reminder off.')}
+function cancelAp(i){const a=S.appts.find(a=>a.id===i);a.status='cancelled';rerender();toast('Appointment cancelled.')}
+function resched(i){modal(`<h3>Reschedule</h3><label for="rd">New date</label><select id="rd">${[0,1,2,3,4,5,6].map(addDays).map(d=>`<option>${d}</option>`).join('')}</select><div class="row" style="margin-top:14px"><button class="btn" onclick="doResched(${i})">Confirm</button><button class="btn ghost" onclick="closeModal()">Close</button></div>`)}
+function doResched(i){const a=S.appts.find(a=>a.id===i);a.date=val('rd');a.token=newToken(a.did,a.date);closeModal();rerender();toast('Moved. New token '+a.token)}
+function rate(i){const a=S.appts.find(a=>a.id===i);modal(`<h3>How was ${esc(D(a.did).name)}?</h3><label for="fr">Rating</label><select id="fr">${[5,4,3,2,1].map(n=>`<option>${n}</option>`).join('')}</select><label for="ft">Comment</label><textarea id="ft" rows="3"></textarea><div class="row" style="margin-top:14px"><button class="btn" onclick="S.feedback.push({id:id(),sid:U.id,doc:'${a.did}',rating:+val('fr'),text:val('ft')});closeModal();rerender();toast('Thanks for the feedback.')">Send</button></div>`)}
+VIEWS.hist=()=>{const l=mine().filter(a=>a.status==='done');
+ return `<h2>Medical history & prescriptions</h2><div class="list">${l.length?l.map(a=>`<div class="card"><div class="row sp"><b>${a.date} · ${esc(D(a.did).name)}</b><span class="pill ok">Completed</span></div><p class="muted" style="margin:6px 0">Problem: ${esc(a.reason)}</p><p style="margin:0 0 8px"><b>Doctor's notes:</b> ${esc(a.notes||'None')}</p>${a.rx.length?`<b>Prescription</b>${a.rx.map(m=>`<div class="item"><span>${esc(m.name)}</span><span class="muted">${m.times.join(', ')} for ${m.days} days</span></div>`).join('')}`:''}${a.tests.length?`<p class="muted">Tests advised: ${a.tests.map(esc).join(', ')}</p>`:''}<button class="btn ghost sm" style="margin-top:8px" onclick="tmp.doc='${a.did}';bookFollow()">Book follow-up</button></div>`).join(''):'<p class="muted">No completed visits yet.</p>'}</div>`};
+function bookFollow(){const did=tmp.doc,date=addDays(7);const a={id:id(),sid:U.id,did,date,reason:'Follow-up visit',token:newToken(did,date),status:'waiting',fu:true,rx:[],notes:'',tests:[],remind:true};S.appts.push(a);save();toast('Follow-up booked for '+date+', token '+a.token)}
+VIEWS.sos=()=>{const l=S.sos.filter(x=>x.sid===U.id);const s=me();
+ return `<h2 style="color:var(--sos)">One-tap SOS</h2><p class="muted">Use this for accidents and serious medical emergencies.</p>
+ <div class="grid" style="margin-top:12px"><div class="card"><button class="btn sos" style="width:100%;padding:34px 10px;font-size:1.6rem;font-family:var(--d);font-weight:800" onclick="emergencyNoLogin2()">SEND SOS</button><label for="el2">Your location (shared with the team)</label><input id="el2" value="${esc(s.hostel)}"><label for="et2">What happened?</label><input id="et2" placeholder="Optional"></div>
+ <div class="card"><h3>Call directly</h3><p style="font-family:var(--d);font-size:2.4rem;font-weight:800;margin:6px 0;color:var(--sos)">112</p><p class="muted">Dial 112 from your phone. A button cannot place calls from this page.</p><h3 style="margin-top:12px">Who gets alerted</h3><p class="muted">College emergency team, hostel warden and campus security. Emergency contact: ${esc(s.ec)}</p></div></div>
+ <h3 style="margin:20px 0 8px">Request tracking</h3>${l.length?l.map(x=>`<div class="card" style="margin-bottom:10px"><div class="row sp"><b>${x.when}</b><span class="pill ${x.step===3?'ok':'bad'}">${STEPS[x.step]}</span></div><p class="muted" style="margin:4px 0 10px">${esc(x.loc)} · ${esc(x.what)}</p><div class="row">${STEPS.map((t,i)=>`<span class="pill ${i<=x.step?'ok':''}" style="${i>x.step?'opacity:.5':''}">${t}</span>`).join('')}</div></div>`).join(''):'<p class="muted">No requests yet.</p>'}`};
+function emergencyNoLogin2(){sendSOS(false)}
+function sendSOS(open){const loc=open?val('el'):val('el2'),what=(open?val('et'):val('et2'))||'Emergency, details not given',rid=open?val('er'):U.id;
+ if(!loc)return toast('Add your location so help can find you.');
+ S.sos.unshift({id:id(),sid:rid||'Unknown',loc,what,when:now(),step:1,notified:['College emergency team','Hostel warden','Campus security']});save();closeModal();toast('SOS sent. Team and warden alerted.');if(U)go('sos');else{modal(`<h3 style="color:var(--ok)">Help is being alerted</h3><p>The emergency team and your warden have your location. Stay where you are, and dial <b>112</b> if life is at risk.</p><button class="btn" onclick="closeModal()">Close</button>`)}}
+</script>
+<script>
+const eqOk=(h,k)=>h.eq[k]==='ok'&&!h.maint.includes(k);
+const vh=()=>S.hospitals.filter(h=>h.verified).sort((a,b)=>a.km-b.km);
+const mapLink=h=>'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(h.name+' '+h.addr);
+const NSTEP=['Request received','Warden and security alerted','Medical staff in contact','Closed'];
+VIEWS.night=()=>{const l=S.night.filter(x=>x.sid===U.id);const s=me();const h=new Date().getHours();const on=h>=20||h<7;
+ return `<h2>NightCare</h2><p class="muted">Medical support for hostel students between 8 PM and 7 AM. <span class="pill ${on?'night':''}">${on?'Active now':'Starts at 8 PM; requests are still accepted'}</span></p>
+ <div class="grid" style="margin-top:12px"><div class="card"><h3>Request night-time help</h3><label for="nt">Problem</label><select id="nt">${['High fever','Severe pain','Breathing difficulty','Injury','Panic or anxiety','Girls hostel safety and medical help','Other'].map(x=>`<option>${x}</option>`).join('')}</select><label for="nl">Location</label><input id="nl" value="${esc(s.hostel)}"><label for="nn">Details</label><textarea id="nn" rows="2"></textarea>
+ <label style="text-transform:none;display:flex;gap:8px;align-items:center"><input id="np" type="checkbox" style="width:auto" checked>Notify my parent (${esc(s.ec)})</label><label style="text-transform:none;display:flex;gap:8px;align-items:center"><input id="ntr" type="checkbox" style="width:auto">Arrange authorised emergency transport</label><label style="text-transform:none;display:flex;gap:8px;align-items:center"><input id="nf" type="checkbox" style="width:auto" checked>Book a morning follow-up if the doctor advises</label><button class="btn" style="margin-top:12px" onclick="sendNight()">Request help</button></div>
+ <div class="card"><h3>Who is involved</h3>${['Hostel warden','Campus security','Night medical staff','Parent (if you allow)','Authorised transport (if needed)'].map(x=>`<div class="item">${x}</div>`).join('')}<p class="muted" style="margin-top:10px">Serious emergency? Use <a href="#" onclick="go('sos');return false" style="color:var(--sos);font-weight:600">SOS</a> instead.</p></div></div>
+ ${l.map(x=>`<div class="card" style="margin-top:12px"><div class="row sp"><b>${x.when} · ${esc(x.type)}</b><span class="pill night">${NSTEP[x.step]}</span></div><p class="muted" style="margin:4px 0">${esc(x.loc)}</p><div class="row" style="margin:8px 0">${NSTEP.map((t,i)=>`<span class="pill ${i<=x.step?'night':''}" style="${i>x.step?'opacity:.5':''}">${t}</span>`).join('')}</div><div class="muted">${x.parent?'Parent notified. ':''}${x.transport?'Transport requested. ':''}${x.fu?'Morning follow-up will be booked if advised.':''}</div>
+ <div class="list">${x.chat.map(c=>`<div class="item" style="${c.me?'background:var(--night-2)':''}"><div><b>${c.me?'You':'Night staff'}</b><div>${esc(c.t)}</div></div></div>`).join('')}</div>
+ ${x.step<3?`<div class="row" style="margin-top:8px"><input id="nc${x.id}" placeholder="Message to medical staff" style="flex:1"><button class="btn sm" onclick="nightMsg(${x.id})">Send</button></div>`:''}</div>`).join('')}`};
+function sendNight(){const l=val('nl');if(!l)return toast('Add your location.');
+ S.night.unshift({id:id(),sid:U.id,type:val('nt'),loc:l,note:val('nn'),when:now(),step:1,parent:$('#np').checked,transport:$('#ntr').checked,fu:$('#nf').checked,chat:[{me:false,t:'Request received. Your warden and campus security have been alerted. A medical staff member will message you here.'}]});rerender();toast('NightCare request sent.')}
+function nightMsg(i){const x=S.night.find(n=>n.id===i),t=val('nc'+i);if(!t)return;x.chat.push({me:true,t});if(x.step<2)x.step=2;x.chat.push({me:false,t:'Message received. Stay in your room, keep your phone with you. We are on the way or will call you shortly.'});rerender()}
+VIEWS.near=()=>{const f=tmp.f||'all';let l=vh().filter(h=>f==='all'||(f==='24'&&h.hrs==='24 hours')||(f==='er'&&!/^No /.test(h.er)));
+ return `<h2>Nearby hospitals</h2><div class="tabs">${[['all','All'],['24','Open 24 hours'],['er','Has emergency dept']].map(x=>`<button class="chip ${f===x[0]?'on':''}" onclick="tmp.f='${x[0]}';render()">${x[1]}</button>`).join('')}</div><div class="list">${l.map(h=>`<div class="card"><div class="row sp"><div><h3>${esc(h.name)}</h3><div class="muted">${esc(h.addr)}</div></div><span class="stat" style="font-size:1.5rem">${h.km} km</span></div><div class="grid" style="margin:10px 0;grid-template-columns:repeat(auto-fit,minmax(180px,1fr))"><div><div class="muted">Phone</div><b>${esc(h.ph)}</b></div><div><div class="muted">Hours</div><b>${esc(h.hrs)}</b></div><div><div class="muted">Emergency dept</div><b>${esc(h.er)}</b></div></div><a class="btn sm" style="text-decoration:none;display:inline-block" href="${mapLink(h)}" target="_blank" rel="noopener">Directions in Google Maps</a></div>`).join('')}</div>`};
+VIEWS.match=()=>{const need=tmp.need||['Emergency doctor','OT','X-ray'];const ran=tmp.ran;
+ const chk=k=>`<button class="chip ${need.includes(k)?'on':''}" onclick="togNeed('${k}')">${k}</button>`;
+ let res='';
+ if(ran){const sc=vh().filter(h=>h.type==='hospital').map(h=>{const miss=need.filter(k=>SPECS.includes(k)?!h.docs[k]:!eqOk(h,k));return{h,miss}}).sort((a,b)=>a.miss.length-b.miss.length||a.h.km-b.h.km);
+  res=`<h3 style="margin:18px 0 8px">Best matches</h3><div class="tw card"><table><tr><th>Hospital</th><th>Match</th><th>km</th>${need.map(k=>`<th>${k}</th>`).join('')}<th>ICU beds</th><th>Ambulances</th></tr>${sc.map(({h,miss})=>`<tr><td><b>${esc(h.name)}</b></td><td><span class="pill ${miss.length?'warn':'ok'}">${need.length-miss.length}/${need.length}</span></td><td>${h.km}</td>${need.map(k=>{const ok=SPECS.includes(k)?h.docs[k]:eqOk(h,k);return `<td>${ok?'<span class="pill ok">Yes</span>':h.maint.includes(k)?'<span class="pill warn">Maintenance</span>':'<span class="pill bad">No</span>'}</td>`}).join('')}<td>${h.icu}</td><td>${h.amb}</td></tr>`).join('')}</table></div><p class="muted">Availability is updated by each hospital. Confirm by phone before travelling.</p>`}
+ return `<h2>Smart emergency hospital matching</h2><p class="muted">Select what the patient needs. We rank hospitals by how many needs they meet, then by distance.</p><h3 style="margin-top:12px">Doctors</h3><div class="tabs">${SPECS.map(chk).join('')}</div><h3>Equipment and facilities</h3><div class="tabs">${EQ.map(chk).join('')}</div><button class="btn" onclick="tmp.ran=1;render()">Find hospitals</button>${res}`};
+function togNeed(k){const n=tmp.need||['Emergency doctor','OT','X-ray'];tmp.need=n.includes(k)?n.filter(x=>x!==k):[...n,k];render()}
+const TESTS=['X-ray','Ultrasound','CT Scan','MRI'];
+VIEWS.diag=()=>{const t=tmp.test||'X-ray';const cs=vh().filter(h=>h.eq[t]==='ok').sort((a,b)=>a.km-b.km);const okc=cs.filter(h=>eqOk(h,t));
+ const mb=S.diag.filter(d=>d.sid===U.id);const refs=S.refs.filter(r=>!r.booked);
+ return `<h2>Diagnostics & referrals</h2><p class="muted">The college medical centre has no scanner. Find the nearest working centre.</p>
+ ${refs.length?`<div class="card" style="margin:12px 0"><h3>Doctor referrals</h3>${refs.map(r=>`<div class="item"><div><b>${esc(r.test)}</b><div class="muted">${esc(r.doc)} · ${r.date}</div></div><button class="btn sm" onclick="tmp.test='${r.test.includes('X-ray')?'X-ray':r.test.includes('MRI')?'MRI':r.test.includes('CT')?'CT Scan':'Ultrasound'}';render()">Find centre</button></div>`).join('')}</div>`:''}
+ <div class="tabs">${TESTS.map(x=>`<button class="chip ${t===x?'on':''}" onclick="tmp.test='${x}';render()">${x}</button>`).join('')}</div>
+ <div class="list">${cs.map(h=>{const up=h.maint.includes(t);return `<div class="card"><div class="row sp"><div><h3>${esc(h.name)}</h3><div class="muted">${h.km} km · ${esc(h.hrs)} · ${esc(h.ph)}</div></div><div style="text-align:right"><div class="stat" style="font-size:1.4rem">${h.cost[t]?'₹'+h.cost[t]:'Ask centre'}</div><span class="pill ${up?'warn':'ok'}">${up?'Under maintenance':'Available'}</span></div></div><div class="row" style="margin-top:8px"><button class="btn sm" ${up?'disabled':''} onclick="bookDiag('${h.id}','${t}')">Book test</button>${up&&okc[0]?`<span class="muted">Alternative: ${esc(okc[0].name)} (${okc[0].km} km)</span>`:''}</div></div>`}).join('')||`<p class="muted">No centre offers ${t} yet.</p>`}</div>
+ <h3 style="margin:22px 0 8px">My diagnostic bookings and reports</h3><div class="list">${mb.length?mb.map(d=>`<div class="card"><div class="row sp"><div><b>${d.test}</b> at ${esc(H(d.hid).name)}<div class="muted">${d.date}${d.transport?' · Transport assistance requested':''}</div></div><span class="pill ${d.step===2?'ok':''}">${['Booked','Test done','Report stored'][d.step]}</span></div><div class="row" style="margin-top:8px">${d.step<2?`<button class="btn ghost sm" onclick="advDiag(${d.id})">Demo: advance status</button>`:`<span class="muted">${esc(d.report)}</span><button class="btn sm" onclick="tmp.doc='d1';bookFollow()">Book follow-up consultation</button>`}</div></div>`).join(''):'<p class="muted">No bookings yet.</p>'}</div>`};
+function bookDiag(hid,t){modal(`<h3>Book ${t}</h3><p class="muted">${esc(H(hid).name)}</p><label for="dd">Date</label><select id="dd">${[0,1,2,3].map(addDays).map(d=>`<option>${d}</option>`).join('')}</select><label style="text-transform:none;display:flex;gap:8px;align-items:center"><input id="dt" type="checkbox" style="width:auto">I need transport assistance</label><div class="row" style="margin-top:14px"><button class="btn" onclick="doDiag('${hid}','${t}')">Confirm</button><button class="btn ghost" onclick="closeModal()">Cancel</button></div>`)}
+function doDiag(hid,t){S.diag.push({id:id(),sid:U.id,hid,test:t,date:val('dd'),transport:$('#dt').checked,step:0,report:''});S.refs.forEach(r=>{if(r.test.includes(t.split(' ')[0]))r.booked=true});closeModal();rerender();toast(t+' booked.')}
+function advDiag(i){const d=S.diag.find(x=>x.id===i);d.step++;if(d.step===2)d.report=d.test+' report stored on '+today()+'. Normal findings (sample).';rerender()}
+const LABT={'Complete blood count':350,'Blood sugar (fasting)':120,'Lipid profile':600,'Thyroid profile':550,'Vitamin D':900};
+const LSTEP=['Booked','Sample collected','Processing','Report ready'];
+VIEWS.labs=()=>`<h2>Lab test tracking</h2><div class="grid" style="margin-top:12px"><div class="card"><h3>Book a blood test</h3><label for="lt">Test</label><select id="lt">${Object.keys(LABT).map(k=>`<option>${k} (₹${LABT[k]})</option>`).join('')}</select><label for="lc">Lab</label><select id="lc">${vh().map(h=>`<option value="${h.id}">${esc(h.name)}</option>`).join('')}</select><label for="ld">Date</label><select id="ld">${[0,1,2].map(addDays).map(d=>`<option>${d}</option>`).join('')}</select><button class="btn" style="margin-top:12px" onclick="bookLab()">Book</button></div></div><h3 style="margin:20px 0 8px">Test history</h3><div class="list">${S.labs.map(l=>`<div class="card"><div class="row sp"><div><b>${esc(l.test)}</b> · ₹${l.cost}<div class="muted">${l.date} · ${esc(l.centre)}</div></div><span class="pill ${l.step===3?'ok':''}">${LSTEP[l.step]}</span></div><div class="row" style="margin:8px 0">${LSTEP.map((t,i)=>`<span class="pill ${i<=l.step?'ok':''}" style="${i>l.step?'opacity:.5':''}">${t}</span>`).join('')}</div>${l.step<3?`<button class="btn ghost sm" onclick="advLab(${l.id})">Demo: advance status</button>`:'<span class="muted">Report available in your records.</span>'}</div>`).join('')}</div>`;
+function bookLab(){const raw=val('lt');const k=raw.replace(/ \(₹\d+\)$/,'');S.labs.unshift({id:id(),test:k,date:val('ld'),step:0,cost:LABT[k],centre:H(val('lc')).name});rerender();toast('Lab test booked.')}
+function advLab(i){S.labs.find(l=>l.id===i).step++;rerender()}
+</script>
+<script>
+VIEWS.meds=()=>`<h2>Medicine reminders</h2><div class="grid" style="margin-top:12px"><div class="card"><h3>Add medicine</h3><label for="mn">Name and dose</label><input id="mn" placeholder="Cetirizine 10 mg"><label for="mt">Times (comma separated)</label><input id="mt" value="09:00, 21:00"><label for="md">Days</label><input id="md" type="number" value="5" min="1"><button class="btn" style="margin-top:12px" onclick="addMed()">Add reminder</button></div></div><h3 style="margin:20px 0 8px">Schedule</h3><div class="list">${S.meds.map(m=>`<div class="card"><div class="row sp"><div><b>${esc(m.name)}</b><div class="muted">${m.days} days</div></div><button class="btn ghost sm" onclick="S.meds=S.meds.filter(x=>x.id!==${m.id});rerender()">Remove</button></div><div class="row" style="margin-top:8px">${m.times.map(t=>{const k=today()+t;return `<button class="chip ${m.taken[k]?'on':''}" onclick="takeMed(${m.id},'${k}')">${t} ${m.taken[k]?'Taken':'Mark taken'}</button>`}).join('')}</div></div>`).join('')||'<p class="muted">No medicines yet.</p>'}</div><div class="card" style="margin-top:14px"><h3>Follow-up notifications</h3>${mine().filter(a=>a.status==='waiting'&&a.fu).map(a=>`<div class="item">Follow-up with ${esc(D(a.did).name)} on ${a.date}</div>`).join('')||'<p class="muted">No follow-ups scheduled.</p>'}</div>`;
+function addMed(){const n=val('mn');if(!n)return toast('Enter a medicine name.');S.meds.push({id:id(),name:n,times:val('mt').split(',').map(x=>x.trim()).filter(Boolean),days:+val('md')||1,taken:{}});rerender()}
+function takeMed(i,k){const m=S.meds.find(x=>x.id===i);m.taken[k]=!m.taken[k];rerender()}
+VIEWS.qr=()=>{const s=me();return `<h2>Emergency QR health card</h2><div class="grid" style="margin-top:12px"><div class="card" style="text-align:center"><div id="qrbox" style="display:inline-block;background:#fff;padding:10px;border-radius:8px"></div><p class="muted" style="margin:8px 0 0">${esc(s.id)}</p></div><div class="card"><h3>${esc(s.name)}</h3><div class="item"><span class="muted">Blood group</span><b>${esc(s.blood)}</b></div><div class="item"><span class="muted">Allergies</span><b>${esc(s.allergy)}</b></div><div class="item"><span class="muted">Conditions</span><b>${esc(s.cond)}</b></div><div class="item"><span class="muted">Emergency contact</span><b>${esc(s.ec)}</b></div><button class="btn ghost sm" style="margin-top:10px" onclick="editMed()">Edit details</button></div></div><div class="card" style="margin-top:14px"><h3>Authorised staff access</h3><p class="muted">Only logged-in medical staff see the full card. Each scan is added to your access history.</p><button class="btn" onclick="staffScan()">Simulate a staff scan</button></div>`};
+function drawQR(){const b=$('#qrbox');if(!b)return;b.innerHTML='';try{new QRCode(b,{text:'JOYU-HEALTH:'+U.id,width:150,height:150})}catch(e){b.textContent='QR library could not load.'}}
+function staffScan(){log('Dr. Anitha Rao','Scanned emergency QR card');rerender();toast('Scan recorded in access history.')}
+function editMed(){const s=me();modal(`<h3>Emergency details</h3><label for="e1">Blood group</label><input id="e1" value="${esc(s.blood)}"><label for="e2">Allergies</label><input id="e2" value="${esc(s.allergy)}"><label for="e3">Conditions</label><input id="e3" value="${esc(s.cond)}"><label for="e4">Emergency contact</label><input id="e4" value="${esc(s.ec)}"><div class="row" style="margin-top:14px"><button class="btn" onclick="const s=me();s.blood=val('e1');s.allergy=val('e2');s.cond=val('e3');s.ec=val('e4');closeModal();rerender()">Save</button></div>`)}
+VIEWS.blood=()=>{const g=tmp.g||'B+';const l=S.blood.filter(b=>b.u[g]>0).sort((a,b)=>a.km-b.km);
+ return `<h2>Blood availability finder</h2><div class="tabs">${['A+','A-','B+','B-','O+','O-','AB+','AB-'].map(x=>`<button class="chip ${g===x?'on':''}" onclick="tmp.g='${x}';render()">${x}</button>`).join('')}</div><div class="list">${l.map(b=>`<div class="card"><div class="row sp"><div><h3>${b.bank}</h3><div class="muted">${b.km} km · Updated ${b.upd}</div></div><div style="text-align:right"><div class="stat">${b.u[g]}</div><div class="muted">units of ${g}</div></div></div>${b.ver?'<span class="pill ok">Verified</span>':''}</div>`).join('')||`<p class="muted">No verified ${g} units nearby right now. Try the Red Cross helpline or widen your search.</p>`}</div>`};
+VIEWS.opinion=()=>{const l=S.opinions.filter(o=>o.sid===U.id);
+ return `<h2>Second medical opinion</h2><div class="grid" style="margin-top:12px"><div class="card"><h3>Ask another doctor</h3><label for="od">Doctor</label><select id="od">${S.doctors.map(d=>`<option value="${d.id}">${esc(d.name)} (${esc(d.spec)})</option>`).join('')}</select><label for="of">Report to share (file name)</label><input id="of" type="file"><label for="oq">Your question</label><textarea id="oq" rows="3"></textarea><p class="muted">Shared reports are visible only to the doctor you choose.</p><button class="btn" onclick="askOp()">Send request</button></div></div><h3 style="margin:20px 0 8px">Your requests</h3><div class="list">${l.map(o=>`<div class="card"><div class="row sp"><b>${esc(D(o.did).name)}</b><span class="pill ${o.ans?'ok':'warn'}">${o.ans?'Answered':'Waiting'}</span></div><p class="muted" style="margin:4px 0">${esc(o.q)}${o.file?' · Report: '+esc(o.file):''}</p>${o.ans?`<p style="margin:6px 0 0"><b>Opinion:</b> ${esc(o.ans)}</p><button class="btn ghost sm" style="margin-top:8px" onclick="tmp.doc='${o.did}';go('book')">Book consultation</button>`:''}</div>`).join('')||'<p class="muted">None yet.</p>'}</div>`};
+function askOp(){const q=val('oq');if(!q)return toast('Write your question.');const f=$('#of').files[0];S.opinions.push({id:id(),sid:U.id,did:val('od'),q,file:f?f.name:'',ans:''});log(D(val('od')).name,'Granted access to a shared report');rerender();toast('Request sent.')}
+VIEWS.access=()=>{const l=S.accReq.filter(a=>a.sid===U.id);
+ return `<h2>Accessibility assistance</h2><div class="grid" style="margin-top:12px"><div class="card"><h3>Wheelchair access at hospitals</h3>${vh().map(h=>`<div class="item"><span>${esc(h.name)}</span><span class="pill ${h.wheel?'ok':'bad'}">${h.wheel?'Accessible':'Not confirmed'}</span></div>`).join('')}</div><div class="card"><h3>Request assistance</h3><label for="ar">Type</label><select id="ar">${['Accessible transport','Wheelchair at medical centre','Escort to appointment','Ramp or lift access','Other'].map(x=>`<option>${x}</option>`).join('')}</select><label for="aw">When and where</label><input id="aw" placeholder="Tomorrow 10 AM, Block C"><button class="btn" style="margin-top:12px" onclick="reqAcc()">Send request</button></div></div><h3 style="margin:20px 0 8px">My requests</h3><div class="list">${l.map(a=>`<div class="item"><div><b>${esc(a.type)}</b><div class="muted">${esc(a.when)}</div></div><span class="pill ${a.done?'ok':'warn'}">${a.done?'Arranged':'Pending'}</span></div>`).join('')||'<p class="muted">None yet.</p>'}</div>`};
+function reqAcc(){const w=val('aw');if(!w)return toast('Add when and where.');S.accReq.push({id:id(),sid:U.id,type:val('ar'),when:w,done:false});rerender();toast('Request sent to admin.')}
+VIEWS.privacy=()=>{const s=me();
+ return `<h2>Medical data privacy</h2><div class="grid" style="margin-top:12px"><div class="card"><h3>Who can see my history</h3>${S.doctors.map(d=>`<div class="item"><span>${esc(d.name)}</span><button class="chip ${s.permit[d.id]?'on':''}" onclick="me().permit['${d.id}']=!me().permit['${d.id}'];log('You','${esc(d.name)} access '+(me().permit['${d.id}']?'granted':'revoked'));rerender()">${s.permit[d.id]?'Allowed':'Not allowed'}</button></div>`).join('')}</div><div class="card"><h3>Protection in the full system</h3>${['Encrypted data storage','Role-based access control','Permission needed for doctors to open records','Every access is logged'].map(x=>`<div class="item">${x}</div>`).join('')}<p class="muted" style="margin-top:8px">This demo keeps data in your browser only. Encryption runs on the real server.</p></div></div><h3 style="margin:20px 0 8px">Record access history</h3><div class="tw card"><table><tr><th>When</th><th>Who</th><th>What</th></tr>${S.access.slice(0,25).map(a=>`<tr><td>${a.when}</td><td>${esc(a.who)}</td><td>${esc(a.what)}</td></tr>`).join('')}</table></div>`};
+</script>
+<script>
+const dq=did=>S.appts.filter(a=>a.did===did&&a.date===today()&&a.status!=='cancelled').sort((a,b)=>a.token.localeCompare(b.token));
+const pname=a=>a.sname||(stu(a.sid)?stu(a.sid).name:a.sid);
+const canSee=(a,did)=>!stu(a.sid)||stu(a.sid).permit[did];
+function callNext(did){if(S.appts.some(a=>a.did===did&&a.date===today()&&a.status==='consulting'))return toast('Finish the current consultation first.');const n=dq(did).find(a=>a.status==='waiting');if(!n)return toast('Queue is empty.');n.status='consulting';rerender()}
+VIEWS.dhome=()=>{const q=dq(U.id);return `<h2>Today's queue</h2><div class="row" style="margin:10px 0"><button class="btn" onclick="callNext('${U.id}')">Call next patient</button><span class="muted">${q.filter(a=>a.status==='waiting').length} waiting · ${q.filter(a=>a.status==='done').length} seen</span></div><div class="list">${q.map(a=>`<div class="card"><div class="row sp"><div><b>${a.token} · ${esc(pname(a))}</b> ${a.fu?'<span class="pill night">Follow-up</span>':''}<div class="muted">${esc(a.reason)}</div></div>${apPill(a.status)}</div><div class="row" style="margin-top:8px"><button class="btn ghost sm" onclick="viewHist('${a.id}')">Medical history</button>${a.status==='consulting'?`<button class="btn sm" onclick="consult(${a.id})">Open consultation</button>`:''}</div></div>`).join('')||'<p class="muted">No patients today.</p>'}</div>`};
+function viewHist(i){const a=S.appts.find(x=>x.id==i);if(!canSee(a,U.id))return modal(`<h3>Permission needed</h3><p>${esc(pname(a))} has not allowed access to their history. Ask the student to allow it from their privacy settings.</p><button class="btn" onclick="closeModal()">Close</button>`);
+ log(D(U.id).name,'Viewed medical history (with permission)');save();const h=S.appts.filter(x=>x.sid===a.sid&&x.status==='done');modal(`<h3>${esc(pname(a))}: history</h3>${stu(a.sid)?`<p class="muted">Blood ${esc(stu(a.sid).blood)} · Allergy: ${esc(stu(a.sid).allergy)} · ${esc(stu(a.sid).cond)}</p>`:''}${h.map(x=>`<div class="item"><div><b>${x.date}</b><div class="muted">${esc(x.reason)}: ${esc(x.notes)}</div></div></div>`).join('')||'<p class="muted">No earlier visits.</p>'}<button class="btn" style="margin-top:12px" onclick="closeModal()">Close</button>`)}
+function consult(i){modal(`<h3>Consultation</h3><label for="cn">Diagnosis and notes</label><textarea id="cn" rows="3"></textarea><label for="cm">Medicine</label><input id="cm" placeholder="Azithromycin 500 mg"><label for="ct">Times</label><input id="ct" value="09:00, 21:00"><label for="cd">Days</label><input id="cd" type="number" value="5"><label for="cx">Recommend test</label><select id="cx"><option value="">None</option>${['X-ray','Ultrasound','CT Scan','MRI','Blood test'].map(x=>`<option>${x}</option>`).join('')}</select><label for="cf">Follow-up in (days)</label><input id="cf" type="number" placeholder="Leave empty if none"><div class="row" style="margin-top:14px"><button class="btn" onclick="finish(${i})">Save and complete</button><button class="btn ghost" onclick="closeModal()">Cancel</button></div>`)}
+function finish(i){const a=S.appts.find(x=>x.id===i);a.notes=val('cn');a.status='done';const mn=val('cm');
+ if(mn){const rx={name:mn,times:val('ct').split(',').map(x=>x.trim()),days:+val('cd')||1};a.rx=[rx];if(stu(a.sid))S.meds.push({id:id(),...rx,taken:{}})}
+ const t=val('cx');if(t){a.tests=[t];if(stu(a.sid)&&t!=='Blood test')S.refs.push({id:id(),test:t,doc:D(U.id).name,date:today(),booked:false})}
+ const f=+val('cf');if(f>0){const d=addDays(f);S.appts.push({id:id(),sid:a.sid,sname:a.sname,did:a.did,date:d,reason:'Follow-up: '+a.reason,token:newToken(a.did,d),status:'waiting',fu:true,rx:[],notes:'',tests:[],remind:true})}
+ closeModal();rerender();toast('Consultation saved. Prescription sent to the student.')}
+VIEWS.davail=()=>{const d=D(U.id);return `<h2>Availability</h2><div class="card" style="max-width:480px;margin-top:12px"><div class="row sp"><b>${d.avail?'Taking appointments':'Not available'}</b><button class="btn ${d.avail?'ghost':''}" onclick="D('${U.id}').avail=!D('${U.id}').avail;rerender()">${d.avail?'Mark unavailable':'Mark available'}</button></div><label for="sl">Today's hours</label><input id="sl" value="${esc(d.slots)}"><button class="btn" style="margin-top:12px" onclick="D('${U.id}').slots=val('sl');rerender();toast('Saved.')">Save hours</button></div>`};
+VIEWS.dpat=()=>`<h2>Patient records</h2><p class="muted">You can open a history only when the student has allowed it.</p><div class="list">${S.students.map(s=>`<div class="item"><div><b>${esc(s.name)}</b><div class="muted">${s.id}</div></div>${s.permit[U.id]?(S.appts.find(a=>a.sid===s.id)?`<button class="btn sm" onclick="viewHist('${S.appts.find(a=>a.sid===s.id).id}')">Open</button>`:'<span class="muted">No visits yet</span>'):'<span class="pill bad">No permission</span>'}</div>`).join('')}</div>`;
+VIEWS.dop=()=>{const l=S.opinions.filter(o=>o.did===U.id);return `<h2>Second-opinion requests</h2><div class="list">${l.map(o=>`<div class="card"><div class="row sp"><b>${esc(stu(o.sid)?.name||o.sid)}</b><span class="pill ${o.ans?'ok':'warn'}">${o.ans?'Answered':'Waiting'}</span></div><p class="muted">${esc(o.q)}${o.file?' · Report: '+esc(o.file):''}</p>${o.ans?`<p>${esc(o.ans)}</p>`:`<textarea id="oa${o.id}" rows="2" placeholder="Your opinion"></textarea><button class="btn sm" style="margin-top:8px" onclick="S.opinions.find(x=>x.id===${o.id}).ans=val('oa${o.id}')||'Reviewed.';log(D('${U.id}').name,'Reviewed shared report');rerender()">Send opinion</button>`}</div>`).join('')||'<p class="muted">No requests.</p>'}</div>`};
+/* hospital */
+const HH=()=>H(U.id);
+const num=(k,l)=>`<div><label for="n_${k}">${l}</label><input id="n_${k}" type="number" min="0" value="${HH()[k]}" onchange="HH().${k}=+this.value;save()"></div>`;
+VIEWS.hhome=()=>{const h=HH();return `<h2>Facilities & beds</h2><div class="card" style="margin-top:12px"><div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(140px,1fr))">${num('icu','ICU beds free')}${num('beds','General beds free')}${num('amb','Ambulances ready')}</div><div class="row" style="margin-top:12px"><button class="chip ${h.wheel?'on':''}" onclick="HH().wheel=!HH().wheel;rerender()">Wheelchair accessible</button></div></div><h3 style="margin:18px 0 8px">Facilities</h3><div class="tabs">${EQ.map(k=>`<button class="chip ${h.eq[k]==='ok'?'on':''}" onclick="HH().eq['${k}']=HH().eq['${k}']==='ok'?'no':'ok';rerender()">${k}</button>`).join('')}</div><p class="muted">Changes show to students right away.</p>`};
+VIEWS.hdoc=()=>`<h2>Doctor duty</h2><p class="muted">Mark who is on duty now.</p><div class="list">${SPECS.map(s=>`<div class="item"><span>${s}</span><button class="chip ${HH().docs[s]?'on':''}" onclick="HH().docs['${s}']=!HH().docs['${s}'];rerender()">${HH().docs[s]?'On duty':'Not on duty'}</button></div>`).join('')}</div>`;
+VIEWS.heq=()=>{const h=HH();return `<h2>Equipment & maintenance</h2><div class="list">${EQ.filter(k=>h.eq[k]==='ok').map(k=>`<div class="item"><span>${k}</span><button class="chip ${h.maint.includes(k)?'on':''}" onclick="togM('${k}')">${h.maint.includes(k)?'Under maintenance':'Working'}</button></div>`).join('')}</div>${h.maint.length?`<div class="card" style="margin-top:14px;background:var(--warn-2)"><b>Maintenance alert</b><p class="muted" style="margin:4px 0 0">${h.maint.join(', ')} hidden from emergency matching until marked working.</p></div>`:''}`};
+function togM(k){const h=HH();h.maint=h.maint.includes(k)?h.maint.filter(x=>x!==k):[...h.maint,k];rerender()}
+VIEWS.hinfo=()=>{const h=HH();return `<h2>Profile & verification</h2><div class="card" style="max-width:480px;margin-top:12px"><span class="pill ${h.verified?'ok':'warn'}">${h.verified?'Verified by admin':'Awaiting verification'}</span><label for="pa">Address</label><input id="pa" value="${esc(h.addr)}"><label for="pp">Phone</label><input id="pp" value="${esc(h.ph)}"><label for="ph">Hours</label><input id="ph" value="${esc(h.hrs)}"><label for="pe">Emergency department</label><input id="pe" value="${esc(h.er)}"><button class="btn" style="margin-top:12px" onclick="Object.assign(HH(),{addr:val('pa'),ph:val('pp'),hrs:val('ph'),er:val('pe')});rerender();toast('Saved.')">Save</button></div>`};
+</script>
+<script>
+const open_=()=>S.sos.filter(x=>x.step<3).length+S.night.filter(x=>x.step<3).length;
+VIEWS.ahome=()=>{const t=[['Students',S.students.length],['Doctors',S.doctors.filter(d=>d.active).length],['Appointments today',S.appts.filter(a=>a.date===today()&&a.status!=='cancelled').length],['Open emergencies',open_()],['Hospitals to verify',S.hospitals.filter(h=>!h.verified).length],['Access requests',S.accReq.filter(a=>!a.done).length]];
+ return `<h2>Overview</h2><div class="grid" style="margin-top:12px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr))">${t.map(x=>`<div class="card"><div class="muted">${x[0]}</div><div class="stat" style="${x[0]==='Open emergencies'&&x[1]?'color:var(--sos)':''}">${x[1]}</div></div>`).join('')}</div>${open_()?`<div class="card" style="margin-top:14px;background:var(--sos-2)"><b>${open_()} emergency request(s) need attention.</b> <button class="btn sos sm" onclick="go('aem')">Open</button></div>`:''}`};
+VIEWS.astu=()=>`<h2>Student accounts</h2><div class="tw card" style="margin-top:12px"><table><tr><th>Roll no.</th><th>Name</th><th>Hostel</th><th>Blood</th><th>Status</th><th></th></tr>${S.students.map(s=>`<tr><td>${s.id}</td><td>${esc(s.name)}</td><td>${esc(s.hostel)}</td><td>${s.blood}</td><td><span class="pill ${s.active?'ok':'bad'}">${s.active?'Active':'Suspended'}</span></td><td><button class="btn ghost sm" onclick="stu('${s.id}').active=!stu('${s.id}').active;rerender()">${s.active?'Suspend':'Activate'}</button></td></tr>`).join('')}</table></div><p class="muted">Students register themselves from the login page.</p>`;
+VIEWS.adoc=()=>`<h2>Doctor accounts</h2><div class="list">${S.doctors.map(d=>`<div class="item"><div><b>${esc(d.name)}</b><div class="muted">${esc(d.spec)} · ${esc(d.email)}</div></div><div class="row"><span class="pill ${d.avail?'ok':'warn'}">${d.avail?'Available':'Away'}</span><button class="btn ghost sm" onclick="D('${d.id}').active=!D('${d.id}').active;rerender()">${d.active?'Deactivate':'Activate'}</button></div></div>`).join('')}</div><div class="card" style="margin-top:14px;max-width:480px"><h3>Add a doctor</h3><label for="an">Name</label><input id="an"><label for="as">Speciality</label><input id="as"><label for="ae">Email</label><input id="ae"><button class="btn" style="margin-top:12px" onclick="addDoc()">Add doctor</button></div>`;
+function addDoc(){const n=val('an'),e=val('ae');if(!n||!e)return toast('Name and email are needed.');S.doctors.push({id:'d'+id(),name:n,spec:val('as')||'General',email:e,pw:'doctor123',avail:true,slots:'9:00 AM - 1:00 PM',active:true});rerender();toast('Doctor added. Temporary password: doctor123')}
+VIEWS.aq=()=>`<h2>Appointments & queue</h2>${S.doctors.map(d=>{const q=dq(d.id);return `<div class="card" style="margin-top:12px"><div class="row sp"><h3>${esc(d.name)}</h3><div class="row"><span class="muted">${q.filter(a=>a.status==='waiting').length} waiting</span><button class="btn sm" onclick="callNext('${d.id}')">Call next</button></div></div>${q.map(a=>`<div class="item" style="margin-top:8px"><div><b>${a.token}</b> ${esc(pname(a))}<div class="muted">${esc(a.reason)}</div></div><div class="row">${apPill(a.status)}${a.status==='waiting'?`<button class="btn ghost sm" onclick="S.appts.find(x=>x.id===${a.id}).status='cancelled';rerender()">Cancel</button>`:''}</div></div>`).join('')||'<p class="muted">Empty queue.</p>'}</div>`}).join('')}`;
+VIEWS.aem=()=>`<h2>Emergency requests</h2><h3 style="margin:14px 0 8px;color:var(--sos)">SOS</h3><div class="list">${S.sos.map(x=>`<div class="card"><div class="row sp"><div><b>${esc(stu(x.sid)?.name||x.sid)}</b> · ${x.when}<div class="muted">${esc(x.loc)} · ${esc(x.what)}</div></div><span class="pill ${x.step===3?'ok':'bad'}">${STEPS[x.step]}</span></div>${x.step<3?`<button class="btn sm" style="margin-top:8px" onclick="S.sos.find(s=>s.id===${x.id}).step++;rerender()">Advance: ${STEPS[x.step+1]}</button>`:''}</div>`).join('')||'<p class="muted">None.</p>'}</div>
+ <h3 style="margin:20px 0 8px">NightCare</h3><div class="list">${S.night.map(x=>`<div class="card"><div class="row sp"><div><b>${esc(stu(x.sid)?.name||x.sid)}</b> · ${esc(x.type)}<div class="muted">${esc(x.loc)} · ${x.when}${x.parent?' · Parent notified':''}${x.transport?' · Transport needed':''}</div></div><span class="pill night">${NSTEP[x.step]}</span></div>${x.step<3?`<button class="btn sm" style="margin-top:8px" onclick="nightAdv(${x.id})">${x.step===2?'Close request':'Advance: '+NSTEP[x.step+1]}</button>`:''}</div>`).join('')||'<p class="muted">None.</p>'}</div>
+ <h3 style="margin:20px 0 8px">Accessibility requests</h3><div class="list">${S.accReq.map(a=>`<div class="item"><div><b>${esc(a.type)}</b><div class="muted">${esc(stu(a.sid)?.name||a.sid)} · ${esc(a.when)}</div></div>${a.done?'<span class="pill ok">Arranged</span>':`<button class="btn sm" onclick="S.accReq.find(x=>x.id===${a.id}).done=true;rerender()">Mark arranged</button>`}</div>`).join('')||'<p class="muted">None.</p>'}</div>`;
+function nightAdv(i){const x=S.night.find(n=>n.id===i);x.step++;if(x.step===3&&x.fu){const d=addDays(1);S.appts.push({id:id(),sid:x.sid,did:'d1',date:d,reason:'Morning follow-up after NightCare: '+x.type,token:newToken('d1',d),status:'waiting',fu:true,rx:[],notes:'',tests:[],remind:true});toast('Morning follow-up booked.')}rerender()}
+VIEWS.ahos=()=>`<h2>Hospital partnerships</h2><div class="list">${S.hospitals.map(h=>`<div class="card"><div class="row sp"><div><h3>${esc(h.name)}</h3><div class="muted">${esc(h.addr)} · ${esc(h.email)}</div></div><span class="pill ${h.verified?'ok':'warn'}">${h.verified?'Verified':'Pending'}</span></div><div class="row" style="margin-top:8px">${h.verified?'':`<button class="btn sm" onclick="H('${h.id}').verified=true;rerender()">Verify</button>`}<button class="btn ghost sm" onclick="S.hospitals=S.hospitals.filter(x=>x.id!=='${h.id}');rerender()">Remove partner</button></div></div>`).join('')}</div>`;
+const avg=a=>a.length?(a.reduce((x,y)=>x+y,0)/a.length).toFixed(1):'-';
+VIEWS.afb=()=>`<h2>Feedback & reports</h2><div class="card" style="margin:12px 0"><div class="muted">Average rating</div><div class="stat">${avg(S.feedback.map(f=>f.rating))} / 5</div></div><div class="list">${S.feedback.map(f=>`<div class="item"><div><b>${esc(D(f.doc).name)}</b> · ${'★'.repeat(f.rating)}<div class="muted">${esc(f.text)}</div></div></div>`).join('')}</div>`;
+VIEWS.aan=()=>{const ap=S.appts.filter(a=>a.status!=='cancelled');const by=S.doctors.map(d=>({n:d.name.replace('Dr. ',''),c:ap.filter(a=>a.did===d.id).length}));const mx=Math.max(1,...by.map(b=>b.c));
+ const cat={'Fever / infection':/fever|cold|cough|throat/i,'Pain / injury':/pain|knee|sprain|injur|head/i,'Skin':/skin|rash/i,'Mental health':/stress|anxi|panic|sleep/i};const dem=Object.entries(cat).map(([k,r])=>[k,ap.filter(a=>r.test(a.reason)).length]);
+ return `<h2>Campus health analytics</h2><div class="grid" style="margin-top:12px"><div class="card"><h3>Doctor workload (appointments)</h3><div class="barv" style="margin:14px 0 26px">${by.map(b=>`<div style="height:${Math.max(4,b.c/mx*100)}%"><b style="position:absolute;top:-20px;left:0;right:0;text-align:center;font-size:.8rem">${b.c}</b><span>${esc(b.n.split(' ')[0])}</span></div>`).join('')}</div></div><div class="card"><h3>Common service demands</h3>${dem.map(d=>`<div class="item"><span>${d[0]}</span><b>${d[1]}</b></div>`).join('')}</div><div class="card"><h3>Performance</h3><div class="item"><span>Appointments completed</span><b>${S.appts.filter(a=>a.status==='done').length}</b></div><div class="item"><span>Cancelled</span><b>${S.appts.filter(a=>a.status==='cancelled').length}</b></div><div class="item"><span>Student rating</span><b>${avg(S.feedback.map(f=>f.rating))}/5</b></div><div class="item"><span>Emergencies handled</span><b>${S.sos.length+S.night.length}</b></div></div></div>`};
+render();
+</script>
+
+
+<style id="joy-campuscare-3d-upgrade">
+/* JOY CAMPUSCARE — premium 3D visual layer (keeps the original app logic intact) */
+:root{
+ --brand:#087f83;--brand-2:#e1f7f4;--ink:#102d35;--bg:#edf5f6;
+ --line:#d5e5e8;--panel:rgba(255,255,255,.92);
+ --d:'Bricolage Grotesque',system-ui,sans-serif;
+ --b:'Figtree',system-ui,sans-serif;
+}
+body{
+ background:
+  radial-gradient(ellipse at 8% 8%,rgba(47,190,183,.16),transparent 30%),
+  radial-gradient(ellipse at 92% 18%,rgba(87,123,231,.13),transparent 28%),
+  radial-gradient(ellipse at 55% 100%,rgba(42,164,145,.12),transparent 34%),
+  #edf5f6;
+ perspective:1400px;
+}
+body:before,body:after{
+ content:"";position:fixed;z-index:-1;pointer-events:none;border-radius:50%;
+ filter:blur(2px);transform-style:preserve-3d;
+}
+body:before{width:260px;height:260px;right:-100px;top:24%;background:linear-gradient(135deg,rgba(43,195,183,.18),rgba(64,112,230,.05));box-shadow:inset -18px -20px 35px rgba(10,89,99,.08),0 35px 90px rgba(20,110,120,.08);animation:joyFloat 11s ease-in-out infinite}
+body:after{width:170px;height:170px;left:-85px;bottom:12%;background:linear-gradient(135deg,rgba(99,130,236,.13),rgba(255,255,255,.08));box-shadow:inset -12px -15px 28px rgba(10,89,99,.08),0 30px 70px rgba(20,80,120,.08);animation:joyFloat 13s ease-in-out infinite reverse}
+@keyframes joyFloat{0%,100%{translate:0 0;rotate:0deg}50%{translate:0 -18px;rotate:8deg}}
+.shell{max-width:1440px;gap:26px;transform-style:preserve-3d}
+.side{
+ background:linear-gradient(160deg,rgba(255,255,255,.82),rgba(235,248,247,.68));
+ border:1px solid rgba(255,255,255,.9);border-radius:22px;
+ margin:14px 0;padding:20px 12px;box-shadow:12px 18px 45px rgba(21,69,78,.10),inset 1px 1px 0 #fff;
+ backdrop-filter:blur(18px);
+}
+.brand{font-size:1.38rem;letter-spacing:-.04em;padding:8px 8px 15px}
+.brand:after{content:"3D EXPERIENCE";display:block;font:800 .58rem var(--b);letter-spacing:.2em;color:#68888d;margin-top:7px}
+.nav{transition:transform .25s,background .25s,box-shadow .25s;border:1px solid transparent}
+.nav:hover{transform:translateX(5px) translateZ(8px);box-shadow:4px 7px 16px rgba(15,100,105,.10)}
+.nav.on{box-shadow:inset 3px 0 0 var(--brand),0 7px 18px rgba(10,107,111,.10);border-color:rgba(8,127,131,.10)}
+.main{transform-style:preserve-3d}
+.top{
+ padding:13px 17px;border-radius:16px;background:rgba(255,255,255,.72);
+ border:1px solid rgba(255,255,255,.9);box-shadow:0 10px 28px rgba(22,73,82,.07);
+ backdrop-filter:blur(16px)
+}
+.card,.role,.item,.tokenbox{
+ position:relative;transform-style:preserve-3d;
+ transition:transform .28s cubic-bezier(.2,.75,.25,1),box-shadow .28s,border-color .28s;
+}
+.card{
+ border:1px solid rgba(255,255,255,.95);
+ background:linear-gradient(145deg,rgba(255,255,255,.98),rgba(242,250,250,.91));
+ border-radius:18px;
+ box-shadow:0 3px 0 rgba(8,87,93,.04),0 12px 26px rgba(24,74,82,.08),inset 1px 1px 0 #fff;
+ overflow:hidden;
+}
+.card:before{
+ content:"";position:absolute;inset:0 0 auto;height:3px;
+ background:linear-gradient(90deg,#13a8a1,#7b9cf0,#a4e5d9);opacity:.85
+}
+.card:hover{
+ transform:translateY(-5px) rotateX(1.2deg) translateZ(10px);
+ box-shadow:0 8px 0 rgba(8,87,93,.035),0 22px 42px rgba(24,74,82,.14),inset 1px 1px 0 #fff;
+ border-color:rgba(31,158,157,.35)
+}
+.role{
+ border:1px solid rgba(255,255,255,.95);border-radius:17px;
+ background:linear-gradient(145deg,#fff,#edf8f7);
+ box-shadow:0 5px 0 #dcebea,0 12px 24px rgba(24,74,82,.09),inset 1px 1px 0 #fff;
+ padding:20px;text-align:left;overflow:hidden
+}
+.role:after{
+ content:"";position:absolute;width:90px;height:90px;right:-34px;bottom:-45px;border-radius:25px;
+ background:linear-gradient(145deg,rgba(39,177,168,.16),rgba(104,137,229,.08));
+ transform:rotate(35deg) translateZ(18px);pointer-events:none
+}
+.role:hover{transform:translateY(-7px) rotateX(3deg) rotateY(-2deg) translateZ(15px);box-shadow:0 8px 0 #dcebea,0 24px 38px rgba(24,74,82,.16)}
+.role b{position:relative;z-index:1;color:#123b42}
+.role span{position:relative;z-index:1}
+.btn{
+ border-radius:11px;background:linear-gradient(135deg,#087f83,#0b626d);
+ box-shadow:0 4px 0 #064e56,0 9px 17px rgba(8,107,111,.18);
+ transition:transform .18s,box-shadow .18s,filter .18s
+}
+.btn:hover{transform:translateY(-2px) translateZ(5px);filter:brightness(1.07);box-shadow:0 6px 0 #064e56,0 14px 22px rgba(8,107,111,.2)}
+.btn:active{transform:translateY(2px);box-shadow:0 1px 0 #064e56}
+.btn.ghost{background:linear-gradient(145deg,#fff,#eaf7f6);box-shadow:0 3px 0 #cbdedc,0 7px 14px rgba(8,107,111,.08);color:#08777b}
+.btn.sos{background:linear-gradient(135deg,#f04450,#b91f39);box-shadow:0 4px 0 #8d1a2c,0 10px 20px rgba(217,47,47,.2)}
+.chip,.pill{box-shadow:0 2px 5px rgba(22,73,82,.06)}
+.tokenbox{
+ background:radial-gradient(circle at 20% 10%,#36b9b0,#087078 58%,#064b5c);
+ box-shadow:inset 0 2px 2px rgba(255,255,255,.28),0 10px 25px rgba(6,94,103,.24);
+ transform:translateZ(12px)
+}
+.stat{text-shadow:0 4px 12px rgba(8,107,111,.13)}
+.item{background:rgba(248,252,252,.75);border-color:#e1eded;border-radius:12px}
+.item:hover{transform:translateY(-2px) translateZ(5px);box-shadow:0 9px 18px rgba(24,74,82,.08)}
+.gate{
+ max-width:1100px;min-height:100vh;display:flex;flex-direction:column;justify-content:center;
+ padding:55px 28px;position:relative
+}
+.gate h1{
+ max-width:850px;font-size:clamp(2.6rem,7vw,5.5rem);letter-spacing:-.055em;
+ background:linear-gradient(120deg,#103b43 12%,#087f83 55%,#627fe0 95%);
+ -webkit-background-clip:text;background-clip:text;color:transparent;
+ text-shadow:0 14px 30px rgba(9,95,101,.08)
+}
+.gate p.lead{font-size:1.05rem;line-height:1.8;max-width:650px}
+.gate:before{
+ content:"JOY CAMPUSCARE";position:absolute;right:5%;top:12%;font:800 clamp(2rem,7vw,6rem) var(--d);
+ color:rgba(8,127,131,.045);letter-spacing:-.06em;pointer-events:none;transform:rotate(-8deg) translateZ(-20px)
+}
+.gate .roles{perspective:1000px}
+.gate .role{min-height:145px}
+.sosbar{box-shadow:0 10px 24px rgba(217,47,47,.16);border:1px solid rgba(255,255,255,.35)}
+.modal .card{box-shadow:0 30px 90px rgba(0,20,25,.3);transform:translateZ(35px)}
+input,select,textarea{border-radius:11px;transition:border-color .2s,box-shadow .2s}
+input:focus,select:focus,textarea:focus{border-color:#139b9b;box-shadow:0 0 0 4px rgba(19,155,155,.11);outline:0}
+table{border-radius:12px;overflow:hidden}
+th{background:#edf7f6}
+.bar{box-shadow:inset 0 2px 4px rgba(10,60,70,.08)}
+.bar i{background:linear-gradient(90deg,#0b8888,#61c7b7)}
+.toast{box-shadow:0 12px 30px rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.16)}
+/* A subtle depth cue on all module headings and panels */
+#page>h2{letter-spacing:-.035em;margin-bottom:7px;text-shadow:0 5px 15px rgba(8,107,111,.08)}
+#page>h3{letter-spacing:-.02em}
+@media(max-width:760px){
+ .side{border-radius:0 0 17px 17px;margin:0 -16px;padding:10px 12px;background:rgba(255,255,255,.9)}
+ .nav:hover{transform:translateY(-2px)}
+ .gate{padding:34px 4px;min-height:auto}
+ .gate:before{top:4%;right:0;font-size:2.2rem}
+ .gate .role{min-height:120px}
+ .card:hover,.role:hover{transform:translateY(-3px)}
+}
+@media(prefers-reduced-motion:reduce){
+ *,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}
+}
+</style>
+
+
+<style id="joy-cinematic-3d">
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Manrope:wght@400;500;600;700;800&display=swap');
+:root{--joy-cyan:#42e8df;--joy-blue:#438dff;--joy-violet:#8d6bff;--joy-deep:#06131f}
+body{font-family:Manrope,'Figtree',sans-serif;background:radial-gradient(ellipse at 12% 0%,#e1f9f7 0%,transparent 38%),radial-gradient(ellipse at 90% 20%,#e8eaff 0%,transparent 34%),linear-gradient(135deg,#eef6f8,#eaf0f8 55%,#e7f5f3);background-attachment:fixed}
+#app{perspective:1400px}
+.gate{max-width:1240px;padding:55px 26px 70px}
+.gate h1{font-family:Orbitron,Manrope,sans-serif;letter-spacing:-.055em;text-transform:uppercase}
+.gate p.lead{font-size:1.05rem;color:#506a79}
+.roles{gap:22px;perspective:1200px}
+.role{position:relative;isolation:isolate;min-height:185px;padding:25px 23px;border:1px solid rgba(255,255,255,.95);border-radius:23px;background:linear-gradient(145deg,rgba(255,255,255,.98),rgba(224,246,247,.9));box-shadow:0 5px 0 #c7e0e2,0 18px 35px rgba(13,74,94,.13),inset 0 1px 0 #fff;transform-style:preserve-3d;transition:transform .35s cubic-bezier(.2,.8,.2,1),box-shadow .35s;overflow:hidden}
+.role:before{content:"";position:absolute;inset:-1px;background:linear-gradient(120deg,transparent 15%,rgba(255,255,255,.8) 35%,transparent 55%);transform:translateX(-120%);transition:transform .7s;z-index:-1}
+.role:after{content:"✚";position:absolute;right:17px;bottom:-26px;font-size:112px;font-weight:900;color:rgba(16,143,151,.08);transform:translateZ(25px) rotate(-12deg);pointer-events:none}
+.role:hover{transform:translateY(-12px) rotateX(7deg) rotateY(-5deg) translateZ(25px);box-shadow:0 9px 0 #b9d8db,0 30px 48px rgba(13,74,94,.22),inset 0 1px 0 #fff}
+.role:hover:before{transform:translateX(120%)}
+.role b{font-size:1.4rem;letter-spacing:-.04em;color:#073e4b;transform:translateZ(30px);margin-bottom:10px}
+.role span{display:block;max-width:27ch;line-height:1.65;color:#52717b;transform:translateZ(18px)}
+.card,.item,.tokenbox,.sosbar{transform-style:preserve-3d;transition:transform .28s,box-shadow .28s}
+.card{border-radius:19px;border:1px solid rgba(255,255,255,.9);background:linear-gradient(145deg,rgba(255,255,255,.97),rgba(238,248,249,.92));box-shadow:0 4px 0 rgba(190,217,221,.65),0 15px 32px rgba(20,67,83,.09),inset 0 1px 0 #fff}
+.card:hover{transform:translateY(-6px) rotateX(2deg) translateZ(10px);box-shadow:0 7px 0 rgba(190,217,221,.65),0 25px 45px rgba(20,67,83,.15)}
+.shell{gap:28px}
+.side{border:1px solid rgba(255,255,255,.85);border-radius:22px;padding:20px 14px;margin:16px 0;height:calc(100vh - 32px);background:linear-gradient(155deg,rgba(255,255,255,.94),rgba(223,244,244,.9));box-shadow:0 5px 0 #c9e1e2,0 18px 35px rgba(15,71,88,.12);backdrop-filter:blur(18px)}
+.brand{font-family:Orbitron,Manrope,sans-serif;font-size:1rem;letter-spacing:-.04em;color:#087e85;padding:8px 5px 16px}
+.nav{border-radius:12px;padding:10px 12px;transition:transform .2s,background .2s,box-shadow .2s}
+.nav:hover{transform:translateX(4px);box-shadow:inset 3px 0 #18a7a5}
+.nav.on{box-shadow:inset 3px 0 #0c9295,0 5px 12px rgba(8,120,127,.09)}
+.main{padding-top:28px}
+.top{padding:14px 18px;border:1px solid rgba(255,255,255,.9);border-radius:17px;background:rgba(255,255,255,.72);box-shadow:0 8px 22px rgba(20,67,83,.07);backdrop-filter:blur(14px)}
+.btn{border-radius:13px;padding:11px 18px;letter-spacing:.01em;box-shadow:0 5px 0 #07515a,0 12px 22px rgba(8,107,111,.2);transition:transform .18s,box-shadow .18s}
+.btn:hover{transform:translateY(-4px) translateZ(8px);box-shadow:0 8px 0 #07515a,0 18px 28px rgba(8,107,111,.23)}
+.btn:active{transform:translateY(3px);box-shadow:0 1px 0 #07515a}
+input,select,textarea{border-radius:12px;background:rgba(249,253,253,.96);box-shadow:inset 0 2px 5px rgba(15,65,77,.045)}
+.item{border-radius:13px;background:linear-gradient(120deg,#fff,#f0f9f9);box-shadow:0 3px 9px rgba(15,65,77,.045)}
+.item:hover{transform:translateY(-3px) translateZ(6px);box-shadow:0 10px 20px rgba(15,65,77,.1)}
+#joy-intro{position:fixed;inset:0;z-index:99999;display:grid;place-items:center;overflow:hidden;color:#eafcff;background:radial-gradient(ellipse at 50% 45%,#123e58 0%,#081b30 48%,#030b16 100%);transition:opacity .9s,visibility .9s}
+#joy-intro.joy-out{opacity:0;visibility:hidden;pointer-events:none}
+#joy-intro:before,#joy-intro:after{content:"";position:absolute;width:min(82vw,780px);aspect-ratio:1;border:1px solid rgba(69,232,223,.17);border-radius:50%;box-shadow:0 0 65px rgba(52,219,222,.09),inset 0 0 65px rgba(52,219,222,.07);animation:joy-orbit 18s linear infinite}
+#joy-intro:after{width:min(60vw,560px);border-color:rgba(121,131,255,.25);animation-direction:reverse;animation-duration:13s}
+@keyframes joy-orbit{to{transform:rotate(360deg)}}
+.joy-particles{position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(2px 2px at 15% 25%,#8afaf0 98%,transparent),radial-gradient(2px 2px at 80% 20%,#9baeff 98%,transparent),radial-gradient(1.5px 1.5px at 70% 75%,#fff 98%,transparent),radial-gradient(2px 2px at 25% 80%,#72dff0 98%,transparent);background-size:280px 260px;opacity:.65;animation:joy-drift 14s linear infinite}
+@keyframes joy-drift{to{background-position:280px 260px}}
+.joy-intro-content{position:relative;z-index:2;width:min(94vw,1050px);text-align:center;padding:30px 12px}
+.joy-emblem{width:78px;height:78px;margin:0 auto 24px;border-radius:24px;display:grid;place-items:center;font-size:39px;color:#eaffff;background:linear-gradient(145deg,#36e3d5,#2363bd);box-shadow:0 8px 0 #123b70,0 22px 45px rgba(44,226,220,.3),inset 0 2px 5px #b5fff8;transform:rotate(-8deg);animation:joy-emblem 3s ease-in-out infinite}
+@keyframes joy-emblem{50%{transform:translateY(-9px) rotate(4deg)}}
+.joy-kicker{font:700 .75rem Manrope,sans-serif;letter-spacing:.38em;text-transform:uppercase;color:#79e9e3;margin-bottom:20px}
+.joy-title{display:flex;justify-content:center;flex-wrap:wrap;gap:.01em;margin:0 auto;font:900 clamp(2rem,8.5vw,6.8rem)/1.1 Orbitron,Manrope,sans-serif;letter-spacing:-.065em;perspective:800px;text-shadow:0 5px 0 #14506a,0 12px 0 #0c324b,0 22px 35px rgba(0,0,0,.5)}
+.joy-title span{display:inline-block;opacity:0;transform:translateY(90px) rotateX(-100deg) scale(.45);background:linear-gradient(180deg,#fff 0%,#a4fff4 42%,#40b9df 100%);-webkit-background-clip:text;background-clip:text;color:transparent;animation:joy-letter .8s cubic-bezier(.18,.82,.2,1) forwards;animation-delay:calc(var(--i)*.095s)}
+.joy-title .joy-space{width:.24em}
+@keyframes joy-letter{65%{opacity:1;transform:translateY(-12px) rotateX(15deg) scale(1.12)}100%{opacity:1;transform:translateY(0) rotateX(0) scale(1)}}
+.joy-subtitle{margin:23px auto 0;max-width:700px;color:#b5d7e4;font-size:clamp(.92rem,2vw,1.12rem);letter-spacing:.07em;opacity:0;animation:joy-fade 1s 2.15s forwards}
+.joy-enter{margin-top:36px;border:1px solid rgba(116,248,238,.6);border-radius:999px;padding:14px 29px;background:linear-gradient(135deg,#35d9d0,#276bd2);color:white;font-weight:800;letter-spacing:.12em;text-transform:uppercase;box-shadow:0 6px 0 #154a83,0 18px 35px rgba(30,182,205,.28);opacity:0;animation:joy-fade .8s 2.7s forwards;cursor:pointer;transition:transform .2s,box-shadow .2s}
+.joy-enter:hover{transform:translateY(-5px);box-shadow:0 11px 0 #154a83,0 25px 42px rgba(30,182,205,.36)}
+.joy-skip{position:absolute;right:22px;top:20px;border:1px solid rgba(255,255,255,.2);border-radius:30px;background:rgba(255,255,255,.07);color:#cde7ed;padding:8px 14px;cursor:pointer}
+@keyframes joy-fade{to{opacity:1}}
+.joy-intro-note{margin-top:20px;color:#7e9eaf;font-size:.72rem;letter-spacing:.13em;opacity:0;animation:joy-fade .8s 3s forwards}
+@media(max-width:760px){.shell{gap:0}.side{height:auto;margin:0 -16px;border-radius:0 0 18px 18px;padding:10px;background:rgba(255,255,255,.92)}.main{padding-top:15px}.joy-title{font-size:clamp(1.75rem,10vw,3.4rem)}.joy-emblem{width:64px;height:64px;font-size:32px}.role{min-height:145px}}
+@media(prefers-reduced-motion:reduce){#joy-intro *,#joy-intro:before,#joy-intro:after{animation:none!important}.joy-title span{opacity:1;transform:none}.joy-subtitle,.joy-enter,.joy-intro-note{opacity:1}}
+</style>
+
+
+<style id="joy-glass">
+/* ===== JOY CAMPUSCARE: LIQUID GLASS LAYER (sidebar v5, glass tabs, movie intro, AI helper) ===== */
+:root{--g:rgba(255,255,255,.34);--g2:rgba(255,255,255,.62);--gb:rgba(255,255,255,.75);--gs:0 12px 36px rgba(24,74,96,.14);--hi:inset 0 1px 0 rgba(255,255,255,.8),inset 0 -1px 0 rgba(255,255,255,.12)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--g:rgba(18,40,50,.42);--g2:rgba(16,34,44,.72);--gb:rgba(255,255,255,.15);--gs:0 14px 40px rgba(0,0,0,.35);--hi:inset 0 1px 0 rgba(255,255,255,.18),inset 0 -1px 0 rgba(255,255,255,.04)}}
+:root[data-theme="dark"]{--g:rgba(18,40,50,.42);--g2:rgba(16,34,44,.72);--gb:rgba(255,255,255,.15);--gs:0 14px 40px rgba(0,0,0,.35);--hi:inset 0 1px 0 rgba(255,255,255,.18),inset 0 -1px 0 rgba(255,255,255,.04)}
+body{background:linear-gradient(135deg,#d7f5f1,#dde6ff 55%,#e0f6ea) fixed!important;color:var(--ink)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) body{background:linear-gradient(135deg,#06161c,#0a1630 55%,#071f1d) fixed!important}}
+:root[data-theme="dark"] body{background:linear-gradient(135deg,#06161c,#0a1630 55%,#071f1d) fixed!important}
+body:before,body:after{display:none}
+#joy-liquid{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
+#joy-liquid i{position:absolute;width:46vmax;height:46vmax;filter:blur(46px);opacity:.75;animation:jl 18s ease-in-out infinite alternate}
+#joy-liquid i:nth-child(1){left:-12vmax;top:-10vmax;background:radial-gradient(circle,#38e0d4,transparent 62%)}
+#joy-liquid i:nth-child(2){right:-14vmax;top:18vh;background:radial-gradient(circle,#6f8cff,transparent 62%);animation-duration:23s}
+#joy-liquid i:nth-child(3){left:22vw;bottom:-22vmax;background:radial-gradient(circle,#9a7bff,transparent 62%);animation-duration:27s;opacity:.55}
+@keyframes jl{0%{transform:translate(0,0) scale(1);border-radius:42% 58% 63% 37%/45% 40% 60% 55%}50%{border-radius:60% 40% 38% 62%/58% 62% 38% 42%}100%{transform:translate(7vw,5vh) scale(1.18);border-radius:38% 62% 45% 55%/62% 38% 62% 38%}}
+.card,.role,.item,.top,.chip,.modal .card{background:var(--g)!important;backdrop-filter:blur(22px) saturate(180%);-webkit-backdrop-filter:blur(22px) saturate(180%);border:1px solid var(--gb)!important;box-shadow:var(--gs),var(--hi)!important;color:var(--ink)}
+.card:before{opacity:.5}
+.role:after{opacity:.5}.role b{color:var(--ink)!important}.role span{color:var(--mute)!important}
+.chip.on{background:var(--brand)!important;color:var(--onb)}
+.modal .card{background:var(--g2)!important}
+input,select,textarea{background:rgba(255,255,255,.42)!important;border:1px solid var(--gb)!important;box-shadow:inset 0 2px 6px rgba(15,65,77,.07)!important;color:var(--ink)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) input,:root:not([data-theme="light"]) select,:root:not([data-theme="light"]) textarea{background:rgba(255,255,255,.07)!important}}
+:root[data-theme="dark"] input,:root[data-theme="dark"] select,:root[data-theme="dark"] textarea{background:rgba(255,255,255,.07)!important}
+.btn{background:linear-gradient(135deg,rgba(18,176,172,.92),rgba(62,112,232,.92))!important;color:#fff!important;border:1px solid rgba(255,255,255,.45)!important;box-shadow:0 10px 24px rgba(30,120,170,.3),inset 0 1px 0 rgba(255,255,255,.55)!important}
+.btn.ghost{background:var(--g)!important;color:var(--brand)!important;backdrop-filter:blur(14px)}
+.btn.sos{background:linear-gradient(135deg,rgba(240,68,80,.92),rgba(185,31,57,.92))!important;color:#fff!important}
+:root[data-theme="dark"] .gate h1{background:linear-gradient(120deg,#e8fffd,#6fe6df 55%,#9db2ff);-webkit-background-clip:text;background-clip:text}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .gate h1{background:linear-gradient(120deg,#e8fffd,#6fe6df 55%,#9db2ff);-webkit-background-clip:text;background-clip:text}}
+/* sidebar v5 */
+.side{background:radial-gradient(circle at 15% 0%,rgba(66,232,223,.32),transparent 45%),radial-gradient(circle at 100% 100%,rgba(141,107,255,.24),transparent 50%),var(--g)!important;backdrop-filter:blur(28px) saturate(190%);-webkit-backdrop-filter:blur(28px) saturate(190%);border:1px solid var(--gb)!important;border-radius:28px!important;box-shadow:var(--gs),var(--hi)!important;transition:width .35s}
+.side .brand{color:var(--brand)}
+.brand:after{content:"SIDEBAR v5 · LIQUID GLASS"!important;color:var(--mute)!important}
+.vt{align-self:flex-end;width:30px;height:30px;border-radius:50%;border:1px solid var(--gb);background:var(--g);color:var(--ink);line-height:1;padding:0;font-size:1rem}
+.nav{position:relative;overflow:hidden;color:var(--ink)!important;opacity:.78;border:1px solid transparent!important;border-radius:15px!important;padding:10px 14px 10px 22px!important;transition:transform .25s,opacity .25s,background .25s}
+.nav:hover{background:rgba(255,255,255,.3)!important;opacity:1;transform:translateX(3px);box-shadow:none!important}
+.nav.on{opacity:1;color:var(--brand)!important;font-weight:700;background:linear-gradient(135deg,rgba(255,255,255,.75),rgba(255,255,255,.25))!important;border-color:var(--gb)!important;box-shadow:0 8px 20px rgba(20,120,140,.2),inset 0 1px 0 #fff!important;animation:jb .55s}
+:root[data-theme="dark"] .nav.on{background:linear-gradient(135deg,rgba(255,255,255,.2),rgba(255,255,255,.06))!important}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .nav.on{background:linear-gradient(135deg,rgba(255,255,255,.2),rgba(255,255,255,.06))!important}}
+.nav.on:before{content:"";position:absolute;left:9px;top:50%;width:7px;height:7px;margin-top:-3.5px;border-radius:50%;background:var(--brand);box-shadow:0 0 10px var(--brand)}
+@keyframes jb{0%{transform:scale(.95,1.05)}50%{transform:scale(1.03,.97)}100%{transform:none}}
+.shell.col{grid-template-columns:92px minmax(0,1fr)}
+.shell.col .brand{font-size:0!important;text-align:center}
+.shell.col .brand small{display:none}
+.shell.col .brand:after{content:"✚"!important;font-size:1.5rem;letter-spacing:0;margin:0;color:var(--brand)!important}
+.shell.col .nav{font-size:0!important;text-align:center;padding:10px 0!important}
+.shell.col .nav:after{content:attr(data-i);font:700 .95rem var(--b)}
+.shell.col .nav.on:before{display:none}
+/* glass navigation tabs */
+.gtabs{position:sticky;top:10px;z-index:7;display:flex;gap:2px;padding:6px;margin:0 0 16px;border-radius:22px;background:var(--g);backdrop-filter:blur(26px) saturate(190%);-webkit-backdrop-filter:blur(26px) saturate(190%);border:1px solid var(--gb);box-shadow:var(--gs),var(--hi);overflow-x:auto;scrollbar-width:none}
+.gtabs::-webkit-scrollbar{display:none}
+.gt{position:relative;z-index:1;flex:none;background:none;border:0;border-radius:15px;padding:9px 15px;font-weight:600;font-size:.88rem;color:var(--ink);opacity:.72;white-space:nowrap;transition:opacity .2s,color .2s}
+.gt:hover{opacity:1}.gt.on{opacity:1;color:var(--brand)}
+.gt-ind{position:absolute;top:6px;bottom:6px;left:0;width:0;border-radius:15px;background:linear-gradient(135deg,rgba(255,255,255,.85),rgba(255,255,255,.3));border:1px solid rgba(255,255,255,.9);box-shadow:0 8px 18px rgba(20,120,150,.22),inset 0 1px 0 #fff;transition:left .5s cubic-bezier(.3,1.5,.5,1),width .5s cubic-bezier(.3,1.5,.5,1)}
+:root[data-theme="dark"] .gt-ind{background:linear-gradient(135deg,rgba(255,255,255,.22),rgba(255,255,255,.07));border-color:rgba(255,255,255,.2)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .gt-ind{background:linear-gradient(135deg,rgba(255,255,255,.22),rgba(255,255,255,.07));border-color:rgba(255,255,255,.2)}}
+@media(max-width:760px){
+ .side{display:none!important}.shell{display:block!important}
+ .gtabs{position:fixed;left:10px;right:10px;bottom:calc(10px + env(safe-area-inset-bottom,0px));top:auto;margin:0;z-index:30}
+ .main{padding-bottom:110px!important}.toast{bottom:92px}
+ #jai-fab{bottom:86px!important}#jai{bottom:152px!important}
+}
+/* AI helper */
+#jai-fab{position:fixed;right:18px;bottom:18px;z-index:9000;width:58px;height:58px;border-radius:50%;border:1px solid rgba(255,255,255,.6);background:linear-gradient(135deg,rgba(66,232,223,.85),rgba(67,141,255,.85));color:#fff;box-shadow:0 12px 30px rgba(30,120,190,.4),inset 0 1px 0 rgba(255,255,255,.6);font:800 1rem Orbitron,sans-serif;letter-spacing:.02em}
+#jai{position:fixed;right:18px;bottom:88px;z-index:9001;width:min(380px,calc(100vw - 24px));height:min(540px,calc(100vh - 120px));display:none;flex-direction:column;border-radius:26px;background:var(--g2);backdrop-filter:blur(30px) saturate(190%);-webkit-backdrop-filter:blur(30px) saturate(190%);border:1px solid var(--gb);box-shadow:0 24px 70px rgba(10,50,80,.3),var(--hi);overflow:hidden;color:var(--ink)}
+#jai.open{display:flex}
+.jai-h{display:flex;justify-content:space-between;align-items:center;padding:14px 16px;border-bottom:1px solid var(--gb)}
+.jai-h small{display:block;color:var(--mute);font-size:.72rem}
+.jai-x{background:none;border:0;font-size:1.5rem;line-height:1;color:var(--ink)}
+.jai-m{flex:1;overflow:auto;padding:12px 14px;display:flex;flex-direction:column;gap:10px}
+.jai-b{max-width:88%;padding:10px 13px;border-radius:16px;font-size:.9rem;line-height:1.5;background:var(--g);border:1px solid var(--gb)}
+.jai-b.me{align-self:flex-end;background:linear-gradient(135deg,rgba(18,176,172,.9),rgba(62,112,232,.9));color:#fff;border-color:transparent}
+.jai-c{display:flex;gap:6px;overflow-x:auto;padding:4px 14px 8px;scrollbar-width:none}
+.jai-c button{flex:none;border:1px solid var(--gb);background:var(--g);color:var(--brand);border-radius:99px;padding:5px 11px;font-size:.78rem;font-weight:600}
+.jai-i{display:flex;gap:8px;padding:10px 12px;border-top:1px solid var(--gb)}
+
+/* 3D everywhere */
+#joy3d{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:-1}
+.main{perspective:1400px}
+#page.j3{animation:j3in .75s cubic-bezier(.2,.8,.2,1)}
+@keyframes j3in{from{opacity:0;transform:rotateY(-22deg) rotateX(6deg) translateZ(-160px) translateX(-40px)}to{opacity:1;transform:none}}
+.card,.role,.item,.tokenbox{transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg));transition:transform .18s ease-out,box-shadow .28s;backdrop-filter:blur(12px) saturate(180%)}
+.card:hover,.role:hover,.item:hover{transform:perspective(900px) rotateX(var(--rx,0deg)) rotateY(var(--ry,0deg)) translateY(-6px) translateZ(22px)!important}
+.card,.role,.item{box-shadow:var(--gs),var(--hi),0 5px 0 -1px rgba(255,255,255,.22),0 9px 0 -3px rgba(80,140,160,.14)!important}
+.side{transform:perspective(1200px) rotateY(5deg);transform-origin:left center}
+.shell.col .side{transform:perspective(1200px) rotateY(8deg)}
+.nav.on,.gt.on{transform:translateZ(14px)}
+.btn:active{transform:translateY(2px) scale(.98)!important}
+@media(max-width:760px){.side{transform:none}}
+@media(prefers-reduced-motion:reduce){#page.j3{animation:none}}
+
+/* portal accents */
+:root[data-portal="doctor"]{--brand:#13885a;--brand-2:#dff5e9}
+:root[data-portal="admin"]{--brand:#5b4bd6;--brand-2:#e7e4fb}
+:root[data-portal="hospital"]{--brand:#c8601a;--brand-2:#fbe9da}
+@media (prefers-color-scheme:dark){
+:root:not([data-theme="light"])[data-portal="doctor"]{--brand:#4fd69b;--brand-2:#143a2b}
+:root:not([data-theme="light"])[data-portal="admin"]{--brand:#a99cff;--brand-2:#241f4d}
+:root:not([data-theme="light"])[data-portal="hospital"]{--brand:#ffa564;--brand-2:#47260f}}
+:root[data-theme="dark"][data-portal="doctor"]{--brand:#4fd69b;--brand-2:#143a2b}
+:root[data-theme="dark"][data-portal="admin"]{--brand:#a99cff;--brand-2:#241f4d}
+:root[data-theme="dark"][data-portal="hospital"]{--brand:#ffa564;--brand-2:#47260f}
+:root[data-portal="doctor"] .btn{background:linear-gradient(135deg,rgba(19,160,100,.92),rgba(30,120,170,.92))!important}
+:root[data-portal="admin"] .btn{background:linear-gradient(135deg,rgba(108,86,230,.92),rgba(60,110,230,.92))!important}
+:root[data-portal="hospital"] .btn{background:linear-gradient(135deg,rgba(230,120,40,.92),rgba(210,70,60,.92))!important}
+:root[data-portal="doctor"] .btn.ghost,:root[data-portal="admin"] .btn.ghost,:root[data-portal="hospital"] .btn.ghost{background:var(--g)!important;color:var(--brand)!important}
+:root[data-portal] .btn.sos{background:linear-gradient(135deg,rgba(240,68,80,.92),rgba(185,31,57,.92))!important;color:#fff!important}
+
+/* movie title intro (opens with the website) */
+#jm{position:fixed;inset:0;z-index:100000;background:radial-gradient(ellipse at 50% 40%,#0f3b52,#050f1c 70%);color:#eafcff;overflow:hidden;font-family:Manrope,sans-serif;transition:opacity .9s}
+#jm.out{opacity:0;pointer-events:none}
+#jm3{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.jm-bar{position:absolute;left:0;right:0;height:0;background:#000;z-index:3;animation:jbar 1.2s forwards}
+@keyframes jbar{to{height:11vh}}.jm-bar.t{top:0}.jm-bar.b{bottom:0}
+.jm-stage{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 16px}
+.jm-pre{position:absolute;top:50%;left:0;right:0;transform:translateY(-50%);letter-spacing:.5em;font-size:clamp(.7rem,2.4vw,1rem);color:#8fe9e3;opacity:0;transition:opacity .6s}.jm-pre.show{opacity:1}
+.jm-flash{position:absolute;inset:0;background:radial-gradient(circle at 50% 45%,rgba(255,255,255,.9),transparent 55%);opacity:0;pointer-events:none}
+.jm-flash.hit{animation:jf 1.6s ease-out}@keyframes jf{0%{opacity:.9}100%{opacity:0}}
+.jm-title{display:flex;justify-content:center;flex-wrap:wrap;margin:0;font:900 clamp(2rem,8vw,6rem)/1.1 Orbitron,Manrope,sans-serif;letter-spacing:-.06em;perspective:800px;text-shadow:0 6px 0 #14506a,0 22px 40px rgba(0,0,0,.5)}
+.jm-title span{display:inline-block;opacity:0;transform:translateY(80px) rotateX(-90deg) scale(.5);background:linear-gradient(180deg,#fff,#a4fff4 45%,#40b9df);-webkit-background-clip:text;background-clip:text;color:transparent}
+.jm-title .sp{width:.25em}
+.jm-title.show span{animation:jl2 .6s cubic-bezier(.18,.82,.2,1) forwards;animation-delay:calc(var(--i)*.04s)}
+@keyframes jl2{65%{opacity:1;transform:translateY(-10px) scale(1.1)}100%{opacity:1;transform:none}}
+.jm-lines{margin-top:26px;display:flex;flex-direction:column;gap:12px;min-height:150px}
+.jm-line{opacity:0;transform:translateY(14px);transition:opacity .8s,transform .8s}.jm-line.show{opacity:1;transform:none}
+.jm-line b{font:800 1.05rem Orbitron,sans-serif;letter-spacing:.3em;color:#6fe6df;margin-right:12px}
+.jm-line span{color:#c5dde6;font-size:clamp(.85rem,2.4vw,1.05rem)}
+.jm-end{opacity:0;transition:opacity 1s;margin-top:10px;visibility:hidden}.jm-end.show{opacity:1;visibility:visible}
+.jm-end p{color:#8fb3c2;letter-spacing:.1em;margin:0 0 14px}
+.jm-b{border:1px solid rgba(116,248,238,.6);border-radius:999px;padding:13px 26px;background:linear-gradient(135deg,#35d9d0,#276bd2);color:#fff;font-weight:800;letter-spacing:.08em}
+.jm-skip,.jm-snd{position:absolute;top:calc(11vh + 8px);z-index:5;border:1px solid rgba(255,255,255,.25);border-radius:30px;background:rgba(255,255,255,.08);color:#d3e9ef;padding:8px 14px}
+.jm-skip{right:16px}.jm-snd{right:104px}
+.jm-hint{position:absolute;left:0;right:0;bottom:calc(11vh + 14px);z-index:5;text-align:center;color:#8fe9e3;letter-spacing:.1em;font-size:.85rem;animation:jh 1.4s ease-in-out infinite}
+@keyframes jh{50%{opacity:.45}}
+@media(prefers-reduced-motion:reduce){.jm-title span{opacity:1;transform:none;animation:none!important}.jm-bar{height:11vh;animation:none}}
+</style>
+<script id="joy-glass-js">
+(function(){
+const Q=(s,r)=>(r||document).querySelector(s);
+const LS={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+let last=null;
+
+/* ---------- liquid background, sidebar v5, glass tabs ---------- */
+function liquid(){if(Q('#joy-liquid'))return;const d=document.createElement('div');d.id='joy-liquid';d.innerHTML='<i></i><i></i><i></i>';document.body.prepend(d)}
+function tabs(sh){
+ const main=Q('.main',sh),top=Q('.top',main);if(!top||Q('.gtabs',main))return;
+ const bar=document.createElement('nav');bar.className='gtabs';bar.setAttribute('aria-label','Sections');
+ const ind=document.createElement('i');ind.className='gt-ind';bar.appendChild(ind);let act=null;
+ sh.querySelectorAll('.side .nav').forEach(n=>{const b=document.createElement('button');b.type='button';b.className='gt'+(n.classList.contains('on')?' on':'');b.textContent=n.textContent.trim();b.onclick=()=>n.click();bar.appendChild(b);if(b.classList.contains('on'))act=b});
+ top.after(bar);
+ if(act){
+  if(last){ind.style.left=last.l+'px';ind.style.width=last.w+'px'}
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{ind.style.left=act.offsetLeft+'px';ind.style.width=act.offsetWidth+'px';last={l:act.offsetLeft,w:act.offsetWidth};bar.scrollLeft=Math.max(0,act.offsetLeft-60)}));
+ }
+}
+function decorate(){
+ liquid();bg3d();const sh=Q('.shell');if(!sh){last=null;lastView=null;return}
+ const side=Q('.side',sh);
+ if(LS.get('joy-col')==='1')sh.classList.add('col');
+ if(!Q('.vt',side)){const t=document.createElement('button');t.className='vt';t.type='button';t.setAttribute('aria-label','Collapse or expand sidebar');t.textContent=sh.classList.contains('col')?'»':'«';t.onclick=()=>{const c=sh.classList.toggle('col');t.textContent=c?'»':'«';LS.set('joy-col',c?'1':'0')};side.prepend(t)}
+ side.querySelectorAll('.nav').forEach(n=>{n.dataset.i=n.textContent.trim().charAt(0).toUpperCase();n.title=n.textContent.trim()});
+ tabs(sh);
+ const v=typeof U!=='undefined'&&U?view:'';if(v!==lastView){lastView=v;const pg=Q('#page');if(pg){pg.classList.remove('j3');void pg.offsetWidth;pg.classList.add('j3')}}
+}
+const R=window.render;
+window.render=function(){R.apply(this,arguments);try{decorate()}catch(e){console.error(e)}};
+window.addEventListener('resize',()=>{const a=Q('.gt.on'),i=Q('.gt-ind');if(a&&i){i.style.left=a.offsetLeft+'px';i.style.width=a.offsetWidth+'px'}});
+
+
+/* ---------- 3D engine (pure canvas, no libraries): one animated look per portal ---------- */
+const rot=(p,a,b)=>{let x=p[0],y=p[1],z=p[2],c=Math.cos(a),s=Math.sin(a),t=x*c+z*s;z=-x*s+z*c;x=t;c=Math.cos(b);s=Math.sin(b);t=y*c-z*s;z=y*s+z*c;y=t;return [x,y,z]};
+const CE=[[0,1],[2,3],[4,5],[6,7],[0,2],[1,3],[4,6],[5,7],[0,4],[1,5],[2,6],[3,7]];
+const cb=(cx,cy,cz,hx,hy,hz)=>{const v=[];for(let i=0;i<8;i++)v.push([cx+(i&1?hx:-hx),cy+(i&2?hy:-hy),cz+(i&4?hz:-hz)]);return {v:v,e:CE}};
+const merge=ps=>{const v=[],e=[];ps.forEach(p=>{const o=v.length;p.v.forEach(x=>v.push(x));p.e.forEach(q=>e.push([q[0]+o,q[1]+o]))});return {v:v,e:e}};
+const BUILD={
+ cross:()=>merge([cb(0,0,0,1,.33,.33),cb(0,0,0,.33,1,.33)]),
+ helix:()=>{const v=[],e=[],N=36;for(let i=0;i<N;i++){const t=i/(N-1)*Math.PI*4,y=i/(N-1)*2.4-1.2;v.push([Math.cos(t)*.6,y,Math.sin(t)*.6]);v.push([Math.cos(t+Math.PI)*.6,y,Math.sin(t+Math.PI)*.6]);if(i){e.push([2*i,2*i-2]);e.push([2*i+1,2*i-1])}if(i%2===0)e.push([2*i,2*i+1])}return {v:v,e:e}},
+ torus:()=>{const v=[],e=[],U=22,V=10;for(let i=0;i<U;i++)for(let j=0;j<V;j++){const u=i/U*Math.PI*2,w=j/V*Math.PI*2,r=.8+.35*Math.cos(w);v.push([r*Math.cos(u),.35*Math.sin(w),r*Math.sin(u)])}for(let i=0;i<U;i++)for(let j=0;j<V;j++){e.push([i*V+j,i*V+(j+1)%V]);e.push([i*V+j,((i+1)%U)*V+j])}return {v:v,e:e}},
+ sphere:()=>{const v=[],e=[],LA=9,LO=16;for(let a=1;a<LA;a++)for(let b=0;b<LO;b++){const p=a/LA*Math.PI,q=b/LO*Math.PI*2;v.push([Math.sin(p)*Math.cos(q),Math.cos(p),Math.sin(p)*Math.sin(q)])}for(let a=0;a<LA-1;a++)for(let b=0;b<LO;b++){e.push([a*LO+b,a*LO+(b+1)%LO]);if(a<LA-2)e.push([a*LO+b,(a+1)*LO+b])}return {v:v,e:e}},
+ octa:()=>{const o=s=>({v:[[s,0,0],[-s,0,0],[0,s,0],[0,-s,0],[0,0,s],[0,0,-s]],e:[[0,2],[0,3],[0,4],[0,5],[1,2],[1,3],[1,4],[1,5],[2,4],[2,5],[3,4],[3,5]]});return merge([o(1.1),o(.55)])},
+ cubes:()=>{const p=[];for(let i=0;i<8;i++)p.push(cb(i&1?.5:-.5,i&2?.5:-.5,i&4?.5:-.5,.27,.27,.27));return merge(p)},
+ tower:()=>merge([cb(0,.65,0,1,.25,.7),cb(0,-.1,0,.5,.5,.4),cb(0,-.85,0,.08,.28,.08),cb(0,-.85,0,.28,.08,.08)]),
+ city:()=>{const p=[];for(let i=0;i<14;i++){const t=i/14*Math.PI*2,h=.25+((i*37)%7)/10;p.push(cb(Math.cos(t)*1.9,.9-h,Math.sin(t)*1.9,.17,h,.17))}return merge(p)}
+};
+const CACHE={};const shape=n=>CACHE[n]||(CACHE[n]=BUILD[n]());
+const SC={home:['cross',175],hist:['helix',200],labs:['helix',160],diag:['helix',190],book:['torus',185],appts:['torus',215],near:['sphere',165],match:['sphere',190],blood:['octa',350],sos:['octa',355],night:['octa',255],meds:['cubes',150],qr:['cubes',195],privacy:['cubes',220],access:['cubes',180],opinion:['cubes',235]};
+const ROLE_SCENE={doctor:v=>v==='dhome'?['cross',150]:['helix',165],admin:v=>v==='aem'?['octa',350]:['cubes',258],hospital:v=>['tower',v==='heq'?35:22]};
+const sceneFor=(role,v)=>ROLE_SCENE[role]?ROLE_SCENE[role](v):(SC[v]||['cross',175]);
+const LOOK={student:{sp:.45,pt:'dot'},doctor:{sp:.35,pt:'plus'},admin:{sp:.55,pt:'sq'},hospital:{sp:.3,pt:'dot'},'':{sp:.45,pt:'dot'}};
+const isDark=()=>{const r=document.documentElement.dataset.theme;return r?r==='dark':window.matchMedia('(prefers-color-scheme:dark)').matches};
+function Engine(cv,cfg){
+ const g=cv.getContext('2d');let W=0,H=0,D=1,k=0,cur=null,pend=null,hue=175,hT=175,a=0,b=.4,mx=0,my=0,tm=performance.now(),T=0,role='';
+ const P=[];for(let i=0;i<110;i++)P.push([Math.random()*2-1,Math.random()*2-1,Math.random()*2-1]);
+ window.addEventListener('pointermove',e=>{mx=e.clientX/window.innerWidth-.5;my=e.clientY/window.innerHeight-.5});
+ function size(){D=Math.min(window.devicePixelRatio||1,2);W=cv.width=Math.max(1,cv.clientWidth*D);H=cv.height=Math.max(1,cv.clientHeight*D)}
+ function mesh(S,cx,cy,R,yaw,pitch,al,col,glow,dots){
+  const pts=S.v.map(v=>{const q=rot(v,yaw,pitch),s=4/(4-q[2]);return [cx+q[0]*R*s,cy+q[1]*R*s,q[2]]});
+  g.lineWidth=1.4*D;if(glow){g.shadowColor=col(.9);g.shadowBlur=10*D}
+  for(let i=0;i<S.e.length;i++){const p=pts[S.e[i][0]],q=pts[S.e[i][1]],z=(p[2]+q[2])/2;g.strokeStyle=col(al*(.3+.5*Math.max(0,Math.min(1,(z+2)/4))));g.beginPath();g.moveTo(p[0],p[1]);g.lineTo(q[0],q[1]);g.stroke()}
+  g.shadowBlur=0;if(dots){g.fillStyle=col(al);pts.forEach(p=>{g.beginPath();g.arc(p[0],p[1],1.7*D,0,6.3);g.fill()})}
+ }
+ function f(now){
+  if(!cv.isConnected)return;requestAnimationFrame(f);
+  const dt=Math.min(.05,(now-tm)/1000);tm=now;
+  if(!W||W!==Math.round(cv.clientWidth*D)||H!==Math.round(cv.clientHeight*D))size();
+  const c=cfg.pos(W,H),dark=cfg.dark(),lk=LOOK[role]||LOOK[''];
+  if(!cur)cur='cross';
+  if(pend){k-=dt*3.5;if(k<=0){k=0;cur=pend;pend=null}}else k=Math.min(1,k+dt*2.2);
+  const sp=cfg.speed*(lk.sp/.45);T+=dt*(sp/.45);
+  hue+=(hT-hue)*Math.min(1,dt*4);a+=dt*sp;b+=((.35+my*.6)-b)*Math.min(1,dt*3);
+  const yaw=a+mx*1.2,col=al=>'hsla('+hue.toFixed(0)+',85%,'+(dark?66:40)+'%,'+al.toFixed(3)+')';
+  g.clearRect(0,0,W,H);
+  /* particles: round bubbles (student, hospital), plus signs (doctor), squares (admin) */
+  g.fillStyle=col(.5*c.al);
+  for(let i=0;i<P.length;i++){const y=(((P[i][1]*.5+.5-T*.04)%1)+1)%1*2-1,q=rot([P[i][0],y,P[i][2]],a*.3+mx*.5,b*.5),s=3/(3-q[2]*1.2),x=W/2+q[0]*W*.6*s,yy=H/2+q[1]*H*.6*s,r=1.6*D*s;
+   if(lk.pt==='plus'){g.fillRect(x-r*2,yy-r*.45,r*4,r*.9);g.fillRect(x-r*.45,yy-r*2,r*.9,r*4)}else if(lk.pt==='sq'){g.fillRect(x-r,yy-r,r*2,r*2)}else{g.beginPath();g.arc(x,yy,r,0,6.3);g.fill()}}
+  /* portal decor */
+  if(role==='doctor'){
+   if(dark){g.shadowColor=col(.9);g.shadowBlur=8*D}
+   for(let L=0;L<3;L++){const y0=H*(.8+L*.06),amp=H*.1*(1-L*.25);g.beginPath();for(let x=0;x<=W;x+=6*D){const p=(((x/W)*3-T*.35-L*.07)%1+1)%1,v=.15*Math.exp(-Math.pow((p-.2)*16,2))+.2*Math.exp(-Math.pow((p-.46)*45,2))-Math.exp(-Math.pow((p-.5)*45,2))+.3*Math.exp(-Math.pow((p-.54)*45,2))-.25*Math.exp(-Math.pow((p-.75)*14,2)),y=y0+v*amp;if(x)g.lineTo(x,y);else g.moveTo(x,y)}g.strokeStyle=col(c.al*(.75-L*.22));g.lineWidth=(2.2-L*.6)*D;g.stroke()}
+   g.shadowBlur=0;
+  }else if(role==='admin'){
+   const y0=H*.58;g.lineWidth=1*D;
+   for(let i=0;i<14;i++){const z=((i+T*.9)%14)/14,y=y0+(H-y0)*z*z;g.strokeStyle=col(.4*c.al*z);g.beginPath();g.moveTo(0,y);g.lineTo(W,y);g.stroke()}
+   for(let j=-14;j<=14;j++){g.strokeStyle=col(.22*c.al);g.beginPath();g.moveTo(W/2+j*W*.015,y0);g.lineTo(W/2+j*W*.14,H);g.stroke()}
+  }else if(role==='hospital'){
+   mesh(shape('city'),c.cx,c.cy+c.R*.12,c.R*.8,-a*.5,Math.max(.25,b),.55*c.al,col,false,false);
+   for(let i=0;i<2;i++){const ph=(T*.35+i*.5)%1;g.beginPath();g.arc(c.cx,c.cy,c.R*(.4+ph*1.6),0,6.2832);g.strokeStyle=col(.5*c.al*(1-ph));g.lineWidth=2*D;g.stroke()}
+  }else{
+   g.lineWidth=1*D;
+   for(let i=0;i<3;i++){const r=1.25+i*.22;g.beginPath();for(let j=0;j<=48;j++){const t=j/48*6.2832,q=rot([Math.cos(t)*r,0,Math.sin(t)*r],yaw*.6+i*1.1,.9+i*.5),s=4/(4-q[2]);const x=c.cx+q[0]*c.R*s,y=c.cy+q[1]*c.R*s;if(j)g.lineTo(x,y);else g.moveTo(x,y)}g.strokeStyle=col(.35*c.al);g.stroke();
+    const t2=T*(.9+i*.3)+i*2,q2=rot([Math.cos(t2)*r,0,Math.sin(t2)*r],yaw*.6+i*1.1,.9+i*.5),s2=4/(4-q2[2]);g.fillStyle=col(c.al);g.beginPath();g.arc(c.cx+q2[0]*c.R*s2,c.cy+q2[1]*c.R*s2,4*D,0,6.3);g.fill()}
+  }
+  if(k>.01)mesh(shape(cur),c.cx,c.cy,c.R*k,yaw,b,c.al,col,dark,true);
+ }
+ requestAnimationFrame(f);
+ const api={set(n,h,r){role=r||'';if(n===cur){pend=null}else if(n!==pend){pend=n}hT=h}};Engine.last=api;return api;
+}
+let bg=null,lastView=null;
+function bg3d(){
+ if(!bg){const cv=document.createElement('canvas');cv.id='joy3d';Q('#joy-liquid').after(cv);
+  const calm=window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+  bg=Engine(cv,{dark:isDark,speed:calm?.05:.45,pos:(W,H)=>W<760*(Math.min(window.devicePixelRatio||1,2))?{cx:W/2,cy:H*.4,R:Math.min(W,H)*.3,al:.45}:{cx:W*.76,cy:H*.5,R:Math.min(W,H)*.34,al:.8}})}
+ const role=typeof U!=='undefined'&&U?U.role:'';document.documentElement.dataset.portal=role;
+ const s=sceneFor(role,role?view:'');bg.set(s[0],s[1],role);
+}
+document.addEventListener('pointermove',e=>{if(e.pointerType==='touch'||!e.target.closest)return;const c=e.target.closest('.card,.role,.item,.tokenbox');if(!c||c.closest('.modal'))return;const r=c.getBoundingClientRect();c.style.setProperty('--ry',(((e.clientX-r.left)/r.width-.5)*14)+'deg');c.style.setProperty('--rx',(-((e.clientY-r.top)/r.height-.5)*14)+'deg')});
+document.addEventListener('pointerout',e=>{const c=e.target.closest&&e.target.closest('.card,.role,.item,.tokenbox');if(c){c.style.setProperty('--rx','0deg');c.style.setProperty('--ry','0deg')}});
+
+/* ---------- sound + voice ---------- */
+let snd=true,timers=[],ac=null,voiceOk=false;
+function A(){if(!ac){const C=window.AudioContext||window.webkitAudioContext;if(C)ac=new C()}if(ac&&ac.state==='suspended')ac.resume();return ac}
+function env(g,t,a,d,p){g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(p,t+a);g.gain.exponentialRampToValueAtTime(.0001,t+a+d)}
+function tone(f,d,type,p){const a=A();if(!a)return;const t=a.currentTime,o=a.createOscillator(),g=a.createGain();o.type=type||'sine';o.frequency.value=f;o.connect(g);g.connect(a.destination);env(g,t,.02,d,p||.12);o.start(t);o.stop(t+d+.1)}
+function chime(f){tone(f,1.6,'sine',.14);tone(f*2,1.2,'sine',.05);tone(f*3,.8,'triangle',.025)}
+function riser(s){const a=A();if(!a)return;const t=a.currentTime,o=a.createOscillator(),g=a.createGain(),fl=a.createBiquadFilter();o.type='sawtooth';o.frequency.setValueAtTime(60,t);o.frequency.exponentialRampToValueAtTime(320,t+s);fl.type='lowpass';fl.frequency.setValueAtTime(200,t);fl.frequency.exponentialRampToValueAtTime(2400,t+s);o.connect(fl);fl.connect(g);g.connect(a.destination);g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(.09,t+s);g.gain.exponentialRampToValueAtTime(.0001,t+s+.15);o.start(t);o.stop(t+s+.2)}
+function boom(){const a=A();if(!a)return;const t=a.currentTime,o=a.createOscillator(),g=a.createGain();o.frequency.setValueAtTime(120,t);o.frequency.exponentialRampToValueAtTime(38,t+1.4);o.connect(g);g.connect(a.destination);env(g,t,.01,1.6,.5);o.start(t);o.stop(t+1.8);
+ const n=a.createBufferSource(),b=a.createBuffer(1,a.sampleRate*1.2,a.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*Math.pow(1-i/d.length,3);n.buffer=b;const ng=a.createGain();ng.gain.value=.25;n.connect(ng);ng.connect(a.destination);n.start(t)}
+function say(t){try{if(!snd||!window.speechSynthesis)return;speechSynthesis.cancel();const u=new SpeechSynthesisUtterance(t);u.rate=.95;u.pitch=.85;u.onstart=()=>{voiceOk=true;const h=Q('.jm-hint');if(h)h.remove()};speechSynthesis.speak(u)}catch(e){}}
+
+/* ---------- movie title intro v2: fast, cinematic, one sound per letter ---------- */
+const JF_CSS=`
+#jf{position:fixed;top:0;left:0;width:100vw;height:100vh;height:100dvh;z-index:99999;background:#02080a;color:#fff;overflow:hidden;font-family:var(--d,'Bricolage Grotesque',system-ui,sans-serif);transition:opacity .7s,visibility .7s}
+#jf.out{opacity:0;visibility:hidden;pointer-events:none}
+#jf .jf-world{position:absolute;top:0;left:0;width:100%;height:100%;min-height:0;max-height:100%;margin:0;box-sizing:border-box;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 10px}
+#jf .jf-world.shk{animation:jfs .12s linear}
+@keyframes jfs{25%{transform:translate(-3px,2px)}50%{transform:translate(3px,-2px)}75%{transform:translate(-2px,-1px)}}
+#jf .jf-vig{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 50%,rgba(79,195,192,.22),transparent 55%),radial-gradient(ellipse at 50% 50%,transparent 45%,rgba(0,0,0,.85) 100%);pointer-events:none}
+#jf .jf-bars i{position:absolute;left:0;right:0;height:0;background:#000;z-index:4;transition:height .8s cubic-bezier(.2,.8,.2,1)}
+#jf .jf-bars i:first-child{top:0}#jf .jf-bars i:last-child{bottom:0}
+#jf.jf-go .jf-bars i{height:9vh}
+#jf .jf-row{display:flex;justify-content:center;white-space:nowrap}
+#jf .jf-r1{font-size:clamp(70px,26vw,200px);font-weight:800;letter-spacing:.02em;line-height:.95}
+#jf .jf-r2{font-size:clamp(30px,8.6vw,110px);font-weight:800;letter-spacing:.03em;line-height:1.1;margin-top:.1em}
+#jf .jf-l{display:inline-block;opacity:0;transform:scale(2.6) translateY(-30px);filter:blur(16px)}
+#jf .jf-l.in{animation:jfl .38s cubic-bezier(.15,.9,.2,1) forwards}
+@keyframes jfl{0%{opacity:0;transform:scale(2.6) translateY(-30px);filter:blur(16px)}60%{opacity:1;filter:blur(0);text-shadow:0 0 50px #4fc3c0,0 0 20px #fff}100%{opacity:1;transform:none;filter:none;text-shadow:0 0 24px rgba(79,195,192,.45)}}
+#jf .jf-l.t{color:#4fc3c0}
+#jf .jf-streak{position:absolute;left:0;top:50%;height:2px;width:100%;margin-top:-1px;background:linear-gradient(90deg,transparent,#fff,#4fc3c0,transparent);transform:scaleX(0);opacity:0;z-index:3}
+#jf .jf-streak.go{animation:jfk 1s ease-out forwards}
+@keyframes jfk{0%{transform:scaleX(0);opacity:1}60%{transform:scaleX(1);opacity:1}100%{transform:scaleX(1.2);opacity:0}}
+#jf .jf-flash{position:absolute;inset:0;background:#fff;opacity:0;z-index:3;pointer-events:none}
+#jf .jf-flash.go{animation:jfh .6s ease-out}
+@keyframes jfh{0%{opacity:.85}100%{opacity:0}}
+#jf .jf-tag{margin-top:22px;font:500 clamp(11px,3.2vw,18px)/1.4 var(--b,sans-serif);letter-spacing:.42em;text-transform:uppercase;color:#a9c4c6;opacity:0;transform:translateY(10px);transition:all .8s}
+#jf .jf-tag.show{opacity:1;transform:none}
+#jf .jf-ctl{position:absolute;right:14px;top:calc(12px + env(safe-area-inset-top,0px));z-index:6;display:flex;gap:8px}
+#jf .jf-ctl button{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.25);border-radius:99px;padding:8px 15px;font:500 13px var(--b,sans-serif);cursor:pointer}
+#jf .jf-hint{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(11vh + 14px);padding:10px 20px;border-radius:99px;background:rgba(79,195,192,.18);border:1px solid #4fc3c0;color:#bff4f1;font:600 15px var(--b,sans-serif);z-index:6;white-space:nowrap;animation:jfpl 1s ease-in-out infinite}@keyframes jfpl{50%{transform:translateX(-50%) scale(1.07);background:rgba(79,195,192,.32)}}
+`;
+const JF_LET=[...'JOY','CAMPUS','CARE'];
+const JF_NOTES=[262,294,330,392,440,523,587,659,784,880,988,1047,1175];
+function jfNoise(d,f0,f1,p){const a=A();if(!a)return;const t=a.currentTime,n=a.createBufferSource(),b=a.createBuffer(1,Math.floor(a.sampleRate*d),a.sampleRate),c=b.getChannelData(0);for(let i=0;i<c.length;i++)c[i]=(Math.random()*2-1)*Math.pow(1-i/c.length,1.5);n.buffer=b;const fl=a.createBiquadFilter();fl.type='bandpass';fl.Q.value=1.2;fl.frequency.setValueAtTime(f0,t);fl.frequency.exponentialRampToValueAtTime(f1,t+d);const g=a.createGain();g.gain.value=p||.12;n.connect(fl);fl.connect(g);g.connect(a.destination);n.start(t)}
+function jfHit(f,i){tone(f,.6,'triangle',.13);tone(f*2,.35,'sine',.05);tone(f/2,.5,'sine',.07);tone(70,.28,'sine',.3);tone(2400+i*60,.05,'square',.02);jfNoise(.22,600,5000,.09)}
+function jfClick(f){jfHit(f,0)}
+function movie(user){
+ timers.forEach(clearTimeout);timers=[];if(window.__jfClean)window.__jfClean();const old=Q('#jf');if(old)old.remove();
+ try{window.speechSynthesis&&speechSynthesis.cancel()}catch(e){}
+ snd=true;
+ if(!Q('#jf-css')){const st=document.createElement('style');st.id='jf-css';st.textContent=JF_CSS;document.head.appendChild(st)}
+ const mk=(s,c,o)=>[...s].map((ch,i)=>'<span class="jf-l '+c+'" data-n="'+(o+i)+'">'+ch+'</span>').join('');
+ const el=document.createElement('div');el.id='jf';
+ el.innerHTML='<div class="jf-bars"><i></i><i></i></div><div class="jf-world"><div class="jf-row jf-r1">'+mk('JOY','',0)+'</div><div class="jf-row jf-r2">'+mk('CAMPUS','',3)+mk('CARE','t',9)+'</div><div class="jf-tag">Joy University Healthcare</div></div><div class="jf-streak"></div><div class="jf-flash"></div><div class="jf-vig"></div><div class="jf-ctl"><button class="snd" type="button">🔊 Sound on</button><button class="skip" type="button">Skip ↗</button></div><div class="jf-hint" hidden>🔊 Touch the screen — sound starts instantly</div>';
+ document.body.appendChild(el);
+ if(user)A();
+ const world=Q('.jf-world',el),letters=[...el.querySelectorAll('.jf-l')],hint=Q('.jf-hint',el);
+ const at=(ms,f)=>timers.push(setTimeout(f,ms));
+ const done=()=>{cleanW();timers.forEach(clearTimeout);timers=[];try{window.speechSynthesis&&speechSynthesis.cancel()}catch(e){}el.classList.add('out');setTimeout(()=>el.remove(),800)};
+ Q('.skip',el).onclick=e=>{e.stopPropagation();done()};
+ Q('.snd',el).onclick=e=>{e.stopPropagation();snd=!snd;e.target.textContent=snd?'🔊 Sound on':'🔇 Muted'};
+ const evs=['pointerdown','touchend','keydown','click'];
+ const cleanW=()=>evs.forEach(v=>document.removeEventListener(v,wake,true));
+ window.__jfClean=cleanW;
+ const wake=e=>{if(e.target&&e.target.closest&&e.target.closest('.skip,.snd'))return;if(Date.now()-(window.__jfT||0)<1500)return;const a=A();if(!a||a.state!=='running'){window.__jfT=Date.now();cleanW();movie(true)}else cleanW()};
+ evs.forEach(v=>document.addEventListener(v,wake,true));
+ requestAnimationFrame(()=>el.classList.add('jf-go'));
+ if(snd){try{riser(1.1);jfNoise(1,150,3000,.07)}catch(e){}}
+ const T0=700,GAP=190;
+ letters.forEach((l,i)=>at(T0+i*GAP,()=>{
+  l.classList.add('in');world.classList.remove('shk');void world.offsetWidth;world.classList.add('shk');
+  if(snd){try{const f=JF_NOTES[i%JF_NOTES.length];jfHit(f,i)}catch(e){}}
+ }));
+ const end=T0+letters.length*GAP+150;
+ at(end,()=>{Q('.jf-flash',el).classList.add('go');Q('.jf-streak',el).classList.add('go');Q('.jf-tag',el).classList.add('show');if(snd){try{boom();jfNoise(1.4,200,9000,.2);chime(523);chime(659);chime(784);chime(1047);setTimeout(()=>{tone(1568,1.5,'sine',.04);tone(2093,1.2,'sine',.025)},200)}catch(e){}}say('Joy Campus Care')});
+ at(250,()=>{const a=A();if(snd&&(!a||a.state!=='running'))hint.hidden=false});
+ at(end+1900,done);
+}
+
+/* ---------- fixes + UI sounds + notifications ---------- */
+(function(){
+ const st=document.createElement('style');st.id='jn-css';
+ st.textContent=`
+ .shell,.main,.side{transform-style:flat!important}
+ .side{transform:none!important}
+ .nav:hover{transform:translateX(5px)!important}
+ .side .nav,.gtabs .gt{cursor:pointer;pointer-events:auto!important}
+ #jn-wrap{position:fixed;left:0;right:0;top:calc(12px + env(safe-area-inset-top,0px));z-index:100000;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none}
+ .jn-toast{display:flex;align-items:center;gap:10px;max-width:min(92vw,420px);padding:12px 18px;border-radius:18px;background:rgba(8,40,44,.94);color:#eafffd;font:600 15px/1.35 var(--b,system-ui,sans-serif);box-shadow:0 10px 34px rgba(0,0,0,.35),0 0 0 1px rgba(79,195,192,.5);transform:translateY(-30px) scale(.9);opacity:0;transition:all .35s cubic-bezier(.2,1.3,.4,1)}
+ .jn-toast.in{transform:none;opacity:1}
+ .jn-ic{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;background:#4fc3c0;color:#06302f;animation:jnr .8s ease-out}
+ @keyframes jnr{0%{transform:rotate(-25deg) scale(.6)}30%{transform:rotate(20deg) scale(1.2)}60%{transform:rotate(-12deg)}100%{transform:none}}
+ .jai-b{animation:jnp .3s cubic-bezier(.2,1.4,.4,1)}
+ @keyframes jnp{from{opacity:0;transform:scale(.7) translateY(8px)}}
+ `;
+ document.head.appendChild(st);
+ const on=()=>snd&&!document.getElementById('jf');
+ const S={
+  tick(){tone(880,.06,'sine',.06);tone(1320,.05,'triangle',.03)},
+  nav(){tone(520,.09,'sine',.07);setTimeout(()=>tone(780,.1,'triangle',.05),40)},
+  pop(){tone(600,.07,'sine',.08);tone(900,.09,'sine',.05)},
+  sos(){tone(880,.14,'square',.05);setTimeout(()=>tone(660,.14,'square',.05),160);setTimeout(()=>tone(880,.14,'square',.05),320)},
+  out(){tone(440,.12,'sine',.07);setTimeout(()=>tone(330,.18,'sine',.06),90)},
+  ding(){tone(988,.35,'sine',.1);tone(1976,.25,'sine',.025);setTimeout(()=>tone(1319,.55,'sine',.1),130)}
+ };
+ window.jnSound=S;
+ let lastT=0;
+ document.addEventListener('click',e=>{
+  if(!on())return;const t=e.target.closest&&e.target.closest('button,a,[onclick],.role,.nav,.gt,select,summary,label.chip,input[type=checkbox],input[type=radio]');
+  if(!t||t.closest('#jf'))return;const n=Date.now();if(n-lastT<40)return;lastT=n;
+  try{
+   const x=(t.textContent||'')+' '+(t.getAttribute('onclick')||'');
+   if(t.id==='jai-fab'||t.closest('#jai'))S.pop();
+   else if(/sos/i.test(x)&&!t.classList.contains('nav')&&!t.classList.contains('gt'))S.sos();
+   else if(/logout|log out/i.test(x))S.out();
+   else if(t.classList.contains('nav')||t.classList.contains('gt'))S.nav();
+   else S.tick();
+  }catch(_){}
+ },true);
+ /* ---------- unique portal entry animations ---------- */
+ const PCSS=`
+ #jp{position:fixed;top:0;left:0;width:100vw;height:100vh;height:100dvh;z-index:99990;overflow:hidden;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-family:var(--d,'Bricolage Grotesque',system-ui,sans-serif);opacity:0;animation:jpin .35s forwards;cursor:pointer}
+ #jp.out{animation:jpout .55s forwards}
+ @keyframes jpin{to{opacity:1}}@keyframes jpout{from{opacity:1}to{opacity:0;visibility:hidden}}
+ #jp .jp-art{position:relative;width:min(70vmin,380px);height:min(70vmin,380px);display:grid;place-items:center}
+ #jp .jp-ico{font-size:min(22vmin,110px);animation:jppop .7s .15s cubic-bezier(.2,1.5,.4,1) both;filter:drop-shadow(0 0 24px var(--c))}
+ @keyframes jppop{from{transform:scale(0) rotate(-40deg);opacity:0}}
+ #jp .jp-t{margin-top:26px;font-weight:800;font-size:clamp(26px,8vw,58px);letter-spacing:.06em;display:flex;flex-wrap:wrap;justify-content:center;gap:0 .02em;padding:0 12px;text-align:center}
+ #jp .jp-t span{display:inline-block;opacity:0;transform:translateY(30px) scale(1.6);filter:blur(10px);animation:jpl .45s cubic-bezier(.2,.9,.3,1) forwards;animation-delay:calc(.5s + var(--i)*.05s)}
+ #jp .jp-sp{width:.4em}
+ @keyframes jpl{to{opacity:1;transform:none;filter:none;text-shadow:0 0 26px var(--c)}}
+ #jp .jp-s{margin-top:10px;font:500 clamp(14px,4vw,20px) var(--b,sans-serif);letter-spacing:.2em;text-transform:uppercase;color:var(--c);opacity:0;animation:jpf .6s 1.2s forwards;text-align:center;padding:0 16px}
+ @keyframes jpf{to{opacity:1}}
+ #jp .jp-bar{position:absolute;left:0;bottom:0;height:4px;background:var(--c);width:0;animation:jpb 2.6s linear forwards}
+ @keyframes jpb{to{width:100%}}
+ /* student: orbit */
+ #jp .jp-ring{position:absolute;border-radius:50%;border:2px solid var(--c);opacity:0;animation:jprg 2.6s ease-out forwards}
+ #jp .r1{inset:0;border-style:dashed;animation-name:jprg,jpsp;animation-duration:2.6s,6s;animation-iteration-count:1,infinite}
+ #jp .r2{inset:12%;animation-delay:.15s}#jp .r3{inset:26%;border-color:#8b9dff;animation-delay:.3s}
+ @keyframes jprg{0%{opacity:0;transform:scale(.2)}25%{opacity:.9;transform:scale(1)}100%{opacity:.35;transform:scale(1.12)}}
+ @keyframes jpsp{to{rotate:360deg}}
+ #jp .jp-dot{position:absolute;width:14px;height:14px;border-radius:50%;background:var(--c);box-shadow:0 0 16px var(--c);left:50%;top:50%;margin:-7px;animation:jpor 2.2s linear infinite}
+ #jp .d2{animation-duration:3s;background:#8b9dff;animation-direction:reverse}#jp .d3{animation-duration:1.6s;animation-delay:-.6s}
+ @keyframes jpor{from{transform:rotate(0) translateX(min(30vmin,160px)) rotate(0)}to{transform:rotate(360deg) translateX(min(30vmin,160px)) rotate(-360deg)}}
+ /* doctor: ecg */
+ #jp .jp-ecg{position:absolute;left:50%;top:50%;width:min(96vw,720px);transform:translate(-50%,-50%);overflow:visible}
+ #jp .jp-ecg path{fill:none;stroke:var(--c);stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:1000;stroke-dashoffset:1000;filter:drop-shadow(0 0 8px var(--c));animation:jpd 1.9s ease-out forwards}
+ @keyframes jpd{to{stroke-dashoffset:0}}
+ #jp.doctor .jp-ico{animation:jppop .7s .15s cubic-bezier(.2,1.5,.4,1) both,jphb .9s 1s ease-in-out infinite}
+ @keyframes jphb{50%{transform:scale(1.18)}}
+ /* admin: radar */
+ #jp .jp-radar{position:absolute;inset:0;border-radius:50%;border:2px solid var(--c);background:repeating-radial-gradient(circle,transparent 0 24px,rgba(167,139,250,.25) 25px 26px),linear-gradient(var(--c),var(--c)) center/1px 100% no-repeat,linear-gradient(var(--c),var(--c)) center/100% 1px no-repeat;opacity:0;animation:jprd .5s forwards}
+ @keyframes jprd{to{opacity:.9}}
+ #jp .jp-radar i{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,transparent 0 270deg,rgba(167,139,250,.75) 360deg);animation:jpsp 1.2s linear infinite}
+ #jp .jp-blip{position:absolute;width:10px;height:10px;border-radius:50%;background:#fff;box-shadow:0 0 14px var(--c);opacity:0;animation:jpbl 1.1s forwards}
+ @keyframes jpbl{30%{opacity:1;transform:scale(1.8)}100%{opacity:.6}}
+ /* hospital: beams + cross */
+ #jp .jp-beam{position:absolute;left:50%;top:50%;width:160vmax;height:160vmax;margin:-80vmax;background:conic-gradient(from 0deg,rgba(255,60,70,.55) 0 28deg,transparent 28deg 180deg,rgba(80,140,255,.5) 180deg 208deg,transparent 208deg);animation:jpsp .9s linear infinite;opacity:.8}
+ #jp .jp-cross{position:relative;width:min(34vmin,150px);height:min(34vmin,150px);animation:jppop .6s .1s cubic-bezier(.2,1.5,.4,1) both;filter:drop-shadow(0 0 26px #ff4a55)}
+ #jp .jp-cross i{position:absolute;background:#fff;border-radius:10px}
+ #jp .jp-cross i:first-child{left:36%;right:36%;top:0;bottom:0}#jp .jp-cross i:last-child{top:36%;bottom:36%;left:0;right:0}
+ #jp .jp-pulse{position:absolute;inset:25%;border-radius:50%;border:3px solid #ff4a55;animation:jpps 1.3s ease-out infinite}
+ #jp .p2{animation-delay:.65s}
+ @keyframes jpps{from{transform:scale(.6);opacity:1}to{transform:scale(2.4);opacity:0}}
+ `;
+ const PI={
+  student:{t:'STUDENT PORTAL',c:'#4fc3c0',bg:'radial-gradient(circle at 50% 42%,#0e3b5e,#050f1c 72%)',art:'<div class="jp-ring r1"></div><div class="jp-ring r2"></div><div class="jp-ring r3"></div><i class="jp-dot d1"></i><i class="jp-dot d2"></i><i class="jp-dot d3"></i><div class="jp-ico">🎓</div>'},
+  doctor:{t:'DOCTOR PORTAL',c:'#4ade80',bg:'radial-gradient(circle at 50% 42%,#0b3d2a,#03120c 72%)',art:'<svg class="jp-ecg" viewBox="0 0 600 160"><path d="M0 80 H120 L140 80 L160 30 L185 140 L210 10 L235 80 H330 L350 62 L370 80 H600"/></svg><div class="jp-ico">🩺</div>'},
+  admin:{t:'ADMIN CONTROL',c:'#a78bfa',bg:'radial-gradient(circle at 50% 42%,#2a1b5e,#0a0618 72%)',art:'<div class="jp-radar"><i></i></div><span class="jp-blip" style="left:68%;top:30%;animation-delay:.5s"></span><span class="jp-blip" style="left:28%;top:58%;animation-delay:.9s"></span><span class="jp-blip" style="left:60%;top:72%;animation-delay:1.3s"></span><div class="jp-ico">🛡️</div>'},
+  hospital:{t:'HOSPITAL PORTAL',c:'#ff6b6b',bg:'radial-gradient(circle at 50% 42%,#4a1218,#12050a 72%)',art:'<div class="jp-beam"></div><div class="jp-pulse"></div><div class="jp-pulse p2"></div><div class="jp-cross"><i></i><i></i></div>'}
+ };
+ const PS={
+  student:()=>{[523,659,784,1047].forEach((f,i)=>setTimeout(()=>{tone(f,.5,'sine',.12);tone(f*2,.3,'triangle',.04)},i*180));setTimeout(()=>{tone(2093,.6,'sine',.04);tone(1568,.6,'sine',.04)},800)},
+  doctor:()=>{[450,1150,1800].forEach(t=>setTimeout(()=>{tone(990,.14,'sine',.12);tone(70,.2,'sine',.25)},t));setTimeout(S.ding,2000)},
+  admin:()=>{for(let i=0;i<6;i++)setTimeout(()=>tone(600+i*180,.05,'square',.04),i*140);setTimeout(()=>tone(180,.14,'square',.08),1250);setTimeout(S.ding,1500)},
+  hospital:()=>{[0,300,600,900,1200,1500].forEach((t,i)=>setTimeout(()=>tone(i%2?950:700,.28,'sawtooth',.05),t));setTimeout(S.ding,1900)}
+ };
+ window.portalIntro=function(role,name){
+  const d=PI[role];if(!d)return;
+  const old=document.getElementById('jp');if(old)old.remove();
+  if(!document.getElementById('jp-css')){const s=document.createElement('style');s.id='jp-css';s.textContent=PCSS;document.head.appendChild(s)}
+  const sub={student:'Welcome, '+(name||'student'),doctor:'Your queue is ready',admin:'Campus overview loading',hospital:'Beds, doctors & equipment live'}[role];
+  const el=document.createElement('div');el.id='jp';el.className=role;el.style.setProperty('--c',d.c);el.style.background=d.bg;
+  let i=0;const letters=[...d.t].map(c=>c===' '?'<span class="jp-sp"></span>':'<span style="--i:'+(i++)+'">'+c+'</span>').join('');
+  el.innerHTML='<div class="jp-art">'+d.art+'</div><div class="jp-t">'+letters+'</div><div class="jp-s"></div><div class="jp-bar"></div>';
+  el.querySelector('.jp-s').textContent=sub;
+  document.body.appendChild(el);
+  let gone=false;const end=()=>{if(gone)return;gone=true;el.classList.add('out');setTimeout(()=>el.remove(),600)};
+  el.onclick=end;setTimeout(end,2700);
+  if(on()){try{PS[role]()}catch(_){}}
+ };
+ const base=window.toast;
+ window.toast=function(m){
+  let w=document.getElementById('jn-wrap');if(!w){w=document.createElement('div');w.id='jn-wrap';w.setAttribute('role','status');w.setAttribute('aria-live','polite');document.body.appendChild(w)}
+  const t=document.createElement('div');t.className='jn-toast';t.innerHTML='<span class="jn-ic">🔔</span><span></span>';t.lastChild.textContent=m;w.appendChild(t);
+  requestAnimationFrame(()=>t.classList.add('in'));
+  if(on()){try{S.ding()}catch(_){}}
+  setTimeout(()=>{t.classList.remove('in');setTimeout(()=>t.remove(),400)},3400);
+ };
+ try{const L=window.login;if(typeof L==='function')window.login=function(){const r=L.apply(this,arguments);try{if(typeof U!=='undefined'&&U){toast('Signed in successfully');let nm='';try{nm=me().name.split(' ')[0]}catch(_){}portalIntro(U.role,nm)}}catch(_){}return r}}catch(_){}
+ new MutationObserver(ms=>{ms.forEach(m=>m.addedNodes.forEach(n=>{if(n.nodeType===1&&n.classList&&n.classList.contains('jai-b')&&on()){try{n.classList.contains('me')?S.tick():S.ding()}catch(_){}}}))}).observe(document.body,{childList:true,subtree:true});
+})();
+
+/* ---------- small AI helper (offline guide, no API needed) ---------- */
+const creds=()=>{try{return Object.values(ROLES).map(r=>'<b>'+r.t+'</b>: '+r.id+' / '+r.pw).join('<br>')}catch(e){return ''}};
+const VH={home:'This is your dashboard: your current token, queue position and SOS status.',book:'Pick a doctor, check their slot timing, add a reason and confirm to get a token.',appts:'Track, reschedule or cancel your appointments here.',hist:'Past visits and prescriptions are kept here.',night:'Request medical help between 8 PM and 7 AM; the warden and medical staff are alerted.',sos:'Press SOS for emergency help; the team is notified at once.',near:'Verified partner hospitals sorted by distance, with map links.',match:'Matches your emergency to hospitals that have the beds, equipment and doctors needed.',diag:'Diagnostics and referrals to partner hospitals.',labs:'Book lab tests and see results.',meds:'Add medicines and tick them off when taken.',qr:'Your emergency QR card shows blood group, allergies and emergency contact.',blood:'Find blood donors and blood banks.',opinion:'Ask another doctor for a second opinion.',access:'Request accessibility help.',privacy:'Choose which doctors can see your medical history.',dhome:'Your queue for today. Press Call next patient, then open the consultation.',davail:'Switch availability and set your slots.',dpat:'Records of patients who allowed you access.',dop:'Second-opinion requests from other doctors.',ahome:'Campus-wide numbers and open emergencies.',astu:'Activate or suspend student accounts.',adoc:'Manage doctors.',aq:'See every appointment and queue.',aem:'Handle SOS and NightCare requests.',ahos:'Verify partner hospitals.',afb:'Student feedback.',aan:'Analytics.',hhome:'Update beds and facilities.',hdoc:'Doctors on duty.',heq:'Equipment and maintenance.',hinfo:'Profile and verification.'};
+function here(){try{if(typeof U==='undefined'||!U)return 'You are on the welcome screen. Pick Student, Doctor, Admin or Hospital to sign in, or use the red emergency button.';const n=NAV[U.role].find(x=>x[0]===view);return 'You are in the <b>'+ROLES[U.role].t+'</b> portal, on <b>'+(n?n[1]:'Dashboard')+'</b>. '+(VH[view]||'Use the sidebar or the glass tabs at the top to switch modules.')}catch(e){return 'Use the sidebar or the glass tabs to move between modules.'}}
+const KB=[
+{k:['what is','about','overview','website','explain','work','how does','purpose','joy campuscare'],a:()=>'Joy CampusCare is a campus healthcare web app. Four portals share one data store: <b>Students</b> book doctors and call for help, <b>Doctors</b> run the queue and write prescriptions, <b>Admins</b> manage people, emergencies and partner hospitals, and <b>Hospitals</b> keep beds, equipment and ambulances current. Change something in one portal and the others see it. Move around with the sidebar or the glass tabs at the top.'},
+{k:['login','log in','sign in','password','credential','demo','register','account'],a:()=>'Pick a role on the first screen. Demo logins (already filled in for you):<br>'+creds()+'<br>New students can use <b>Register</b> on the student login.'},
+{k:['book','appointment','token','queue','slot','consult'],a:'<b>Student → Book appointment</b> → choose a doctor (see their slot time) → add a reason → confirm. You get a token like A-001; your dashboard shows how many people are ahead (about 8 minutes each). Cancel under <b>My appointments</b>. The doctor presses <b>Call next patient</b> to start.'},
+{k:['night','hostel','warden','late'],a:'<b>NightCare</b> covers 8 PM to 7 AM. Choose the problem, confirm your hostel location, optionally notify your parent and arrange authorised transport. Status goes Request received → Warden and security alerted → Medical staff in contact → Closed.'},
+{k:['sos','emergency','ambulance','urgent'],a:'<b>One-tap SOS</b> (red bar on every student page) sends your request through four steps: Received → Emergency team notified → Help on the way → Resolved. Admins see it under <b>Emergency requests</b>. The front screen also has emergency help without login. In a real emergency call your local number first (112 in India).'},
+{k:['nearby','hospital','match','bed','equipment','referral','diagnostic'],a:'<b>Nearby hospitals</b> lists verified partners by distance with map links. <b>Emergency matching</b> checks which hospital has the equipment (OT, ICU, CT, ventilator, blood bank) and specialists you need. Hospitals keep this accurate in their own portal.'},
+{k:['lab','test','report'],a:'<b>Lab tests</b> lets students book tests and view results. Diagnostics and referrals send you on to partner hospitals when needed.'},
+{k:['medicine','reminder','tablet','pill'],a:'<b>Medicine reminders</b>: add a name and dose, times (like 09:00, 21:00) and number of days, then tap each time to mark it taken. Follow-ups set by your doctor also show there.'},
+{k:['qr','card'],a:'The <b>Emergency QR card</b> encodes your blood group, allergies, conditions and emergency contact so responders can read it fast.'},
+{k:['blood','donor'],a:'<b>Blood finder</b> helps students find donors and blood banks quickly.'},
+{k:['opinion'],a:'<b>Second opinion</b>: a student or doctor asks another doctor to review a case. Doctors answer under <b>Second opinions</b>.'},
+{k:['accessib','disab','screen reader'],a:'<b>Accessibility help</b> sends a request to admins, who mark it done. The site also supports keyboard focus and a dark or light theme.'},
+{k:['privacy','permission','permit','consent','history','records'],a:'Students choose which doctors may see their medical history under <b>Data privacy</b>. If a doctor has no permission, they are asked to get it first.'},
+{k:['doctor login','doctor portal','as a doctor','prescription','call next','availability'],a:'Doctors see <b>Today\'s queue</b> (Call next patient → Open consultation → write prescription or follow-up), <b>Availability</b>, <b>Patient records</b> (only with permission) and <b>Second opinions</b>.'},
+{k:['admin'],a:'Admins get an overview (students, doctors, appointments, open emergencies), student and doctor management (suspend or activate), the full queue, emergency requests, hospital verification, feedback and analytics.'},
+{k:['hospital login','partner','facilities'],a:'Hospital accounts update <b>beds and facilities</b>, <b>doctor duty</b>, <b>equipment and maintenance</b> and their <b>profile</b>. Admins verify a hospital before students see it.'},
+{k:['dark','light','theme','sidebar','tab','collapse','glass','navigation','liquid'],a:'Use the <b>Light / dark</b> button at the top. The <b>sidebar v5</b> has a « button to collapse it to letters; the <b>glass tabs</b> above the page slide a liquid highlight to the active module (on phones they become a bottom dock). Each portal has its own 3D look: Student orbiting rings, Doctor heartbeat line and DNA, Admin data grid and cubes, Hospital building and city pulse.'},
+{k:['save','storage','reset','clear','data','lost','backup'],a:'This is a demo build: everything is saved in <b>this browser only</b> (localStorage). Other devices will not see it. To reset, clear the site data for this page in your browser settings.'},
+{k:['download','host','deploy','publish','apply','install','online','domain','production','how to use','site'],a:'It is a <b>single HTML file</b>. To use it: open it in a browser. To put it online, upload the file to any static host (Netlify Drop, GitHub Pages, Vercel). To make it real for a campus you would need a backend for shared data, secure logins (passwords here are plain demo text) and real SMS or call integration. Do not use it for real medical records as it stands.'},
+{k:['name','meaning','replay','intro','movie','title'],a:'<b>JOY</b> is the feeling of being well, heard and looked after. <b>CAMPUS</b> is one shared home for students, doctors, wardens and hospitals. <b>CARE</b> is real help at any hour. Playing the title sequence with voice.',f:()=>setTimeout(()=>movie(true),400)}
+];
+function answer(q){
+ const t=q.toLowerCase();
+ if(/where am i|this page|current page|this screen/.test(t))return {a:here()};
+ let best=null,sc=0;KB.forEach(e=>{let s=0;e.k.forEach(k=>{if(t.includes(k))s+=k.length>4?2:1});if(s>sc){sc=s;best=e}});
+ if(!best)return {a:'I can explain how the website works, the four portals, demo logins, booking, SOS, NightCare, privacy, saving data and how to host it. Try one of the buttons below.'};
+ return {a:typeof best.a==='function'?best.a():best.a,f:best.f};
+}
+function agent(){
+ const fab=document.createElement('button');fab.id='jai-fab';fab.type='button';fab.setAttribute('aria-label','Open Joy Helper');fab.textContent='AI';
+ const p=document.createElement('div');p.id='jai';
+ p.innerHTML='<div class="jai-h"><div><b>Joy Helper</b><small>Small AI guide · works offline</small></div><button class="jai-x" type="button" aria-label="Close">×</button></div><div class="jai-m" aria-live="polite"></div><div class="jai-c"></div><div class="jai-i"><input placeholder="Ask how this website works…" autocomplete="off"><button class="btn sm" type="button">Send</button></div>';
+ document.body.append(p,fab);
+ const m=Q('.jai-m',p),inp=Q('input',p);
+ const add=(c,h,txt)=>{const d=document.createElement('div');d.className='jai-b '+c;if(txt)d.textContent=h;else d.innerHTML=h;m.appendChild(d);m.scrollTop=m.scrollHeight};
+ const ask=q=>{q=q.trim();if(!q)return;add('me',q,1);const r=answer(q);setTimeout(()=>{add('bot',r.a);if(r.f)r.f()},350)};
+ ['How does this website work?','Demo logins','How do I book a doctor?','What is SOS?','Where am I?','How to host this site','Why this name?','Replay intro'].forEach(c=>{const b=document.createElement('button');b.type='button';b.textContent=c;b.onclick=()=>ask(c==='Why this name?'?'name meaning':c);Q('.jai-c',p).appendChild(b)});
+ Q('.btn',p).onclick=()=>{ask(inp.value);inp.value=''};
+ inp.onkeydown=e=>{if(e.key==='Enter'){ask(inp.value);inp.value=''}};
+ Q('.jai-x',p).onclick=()=>p.classList.remove('open');
+ fab.onclick=()=>{p.classList.toggle('open');if(p.classList.contains('open')&&!m.children.length)add('bot','Hi, I am Joy Helper. Ask me how this website works, how to use each portal, or how to put it online.')};
+}
+
+decorate();agent();movie(false);
+})();
+</script>
+</body></html>
